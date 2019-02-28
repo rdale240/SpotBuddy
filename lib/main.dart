@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import './login.dart';
+import './signup.dart';
 
 void main() => runApp(MyApp());
 
@@ -28,16 +30,16 @@ class MyApp extends StatelessWidget {
           display4: new TextStyle(color: Colors.white),
           body2: new TextStyle(color: Colors.white),
           headline: new TextStyle(color: Colors.white),
-          title: new TextStyle(color: Colors.white),
+          title: new TextStyle(color: Colors.black, fontSize: 48),
         ),
       ),
-      home: MyHomePage(title: 'SpotBuddy Login'),
+      home: Landing(title: 'SpotBuddy'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+class Landing extends StatefulWidget {
+  Landing({Key key, this.title}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -51,39 +53,16 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _LandingState createState() => _LandingState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _LandingState extends State<Landing> {
+  void _Log() {
+    print('print: Login Press');
+  }
 
-  void _incrementCounter() {
-    var url = "http://13.59.182.232/createProfile";
-    //var url = "http://18.222.104.22/createProfile";
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-      http.post(url, body: {
-        "first_name": "App Post",
-        "email": "app@app.com",
-        "pass": "******",
-        "birthday": "2-5-1978",
-        "messangerID": "SomeID",
-        "broadLocationID": "SomeID",
-        "focusedLocationID": "Some ID",
-        "biography": "Posting From App",
-        "isABuddy": "1",
-        "publicRating": "4.6",
-        "govtID": "Good Question"
-      }).then((response) {
-        print("Response status: ${response.statusCode}");
-        print("Response body: ${response.body}");
-      });
-    });
+  void _Create() {
+    print('print: Create Press');
   }
 
   @override
@@ -95,12 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title, style: TextStyle(color: Colors.white)),
-      ),
-      body: SafeArea(
+      body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         child: ListView(
@@ -120,44 +94,50 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           padding: EdgeInsets.symmetric(horizontal: 24.0),
           children: <Widget>[
-            SizedBox(height: 80.0),
-            SizedBox(height: 80.0), // Space for Logo
-            TextField(
-              decoration: InputDecoration(
-                labelText: "Username",
-                filled: true,
-              ),
+            SizedBox(height: 120.0),
+            Container(
+                child: new Text('SpotBuddy',
+                    style: Theme.of(context).textTheme.title),
+                alignment: Alignment(0.0, 0.0)),
+            SizedBox(height: 200.0), // Space for Logo
+            SizedBox(height: 120.0),
+            MaterialButton(
+              child: Text("Login"),
+              color: Colors.lightGreen,
+              minWidth: 200,
+              height: 80,
+              shape: new RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(100.0)),
+              onPressed: () {
+                _Log();
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            LoginPage(title: "SpotBuddy Login")));
+              },
             ),
-            SizedBox(height: 80.0),
-            TextField(
-              decoration: InputDecoration(
-                labelText: "Password",
-                filled: true,
-              ),
-              obscureText: true,
-            ),
-            ButtonBar(
-              children: <Widget>[
-                FlatButton(
-                  child: Text('CANCEL'),
-                  onPressed: () {},
-                ),
-                RaisedButton(
-                  child: Text("Next"),
-                  onPressed: () {
-                    _incrementCounter();
-                  },
-                )
-              ],
+            SizedBox(height: 40.0),
+            MaterialButton(
+              child: Text("Sign Up"),
+              color: Colors.lightGreenAccent,
+              minWidth: 200,
+              height: 80,
+              clipBehavior: Clip.antiAlias,
+              shape: new RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(100.0)),
+              onPressed: () {
+                _Create();
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            SignUpPage(title: "SpotBuddy Sign Up")));
+              },
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
