@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
+import './homepage.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key, this.title}) : super(key: key);
@@ -20,10 +22,32 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    var url = "http://18.191.28.138/createProfile";
+  TextEditingController email = TextEditingController();
+  TextEditingController pass = TextEditingController();
+  void _showDialog(String message) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Error"),
+          content: new Text(message),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+  void _login() {
+    var url = "http://18.223.190.192/signin/";
     //var url = "http://18.222.104.22/createProfile";
     setState(() {
       // This call to setState tells the Flutter framework that something has
@@ -31,22 +55,25 @@ class _LoginPageState extends State<LoginPage> {
       // so that the display can reflect the updated values. If we changed
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
-      _counter++;
-      http.post(url, body: {
-        "first_name": "App Post",
-        "email": "app@app.com",
-        "pass": "******",
-        "birthday": "2-5-1978",
-        "messangerID": "SomeID",
-        "broadLocationID": "SomeID",
-        "focusedLocationID": "Some ID",
-        "biography": "Posting From App",
-        "isABuddy": "1",
-        "publicRating": "4.6",
-        "govtID": "Good Question"
-      }).then((response) {
+      http
+          .get(url + '?email=' + email.text + '&pass=' + pass.text)
+          .then((response) {
         print("Response status: ${response.statusCode}");
         print("Response body: ${response.body}");
+        var jsonString = '''
+          [ ${response.body} ]''';
+        var scores = jsonDecode(jsonString);
+        if (response.statusCode == 200) {
+          print(scores[0]);
+          if (scores[0]["accessToken"] != null) {
+            print("Signing in");
+            Navigator.popUntil(context, ModalRoute.withName('/'));
+            Navigator.pushReplacementNamed(context, '/home');
+      }
+          }
+        else {
+          _showDialog("Email or Password is Incorrect");
+        }
       });
     });
   }
@@ -88,6 +115,7 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(height: 80.0),
             SizedBox(height: 80.0), // Space for Logo
             TextField(
+              controller: email,
               decoration: InputDecoration(
                 labelText: "Username",
                 filled: true,
@@ -95,6 +123,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             SizedBox(height: 80.0),
             TextField(
+              controller: pass,
               decoration: InputDecoration(
                 labelText: "Password",
                 filled: true,
@@ -103,20 +132,10 @@ class _LoginPageState extends State<LoginPage> {
             ),
             ButtonBar(
               children: <Widget>[
-                FlatButton(
-                  child: Text('CANCEL'),
-                  onPressed: null,
-                  // onPressed: () {
-                  //   // Navigator.push(context,
-                  //   // MaterialPageRoute(builder:
-                  //   // (context) => Landing(title:"SpotBuddy Landing")));
-                    
-                  // },
-                ),
                 RaisedButton(
                   child: Text("Next"),
                   onPressed: () {
-                    _incrementCounter();
+                    _login();
                   },
                 )
               ],

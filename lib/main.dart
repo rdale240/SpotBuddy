@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import './login.dart';
 import './signup.dart';
+import './homepage.dart';
 
 void main() => runApp(MyApp());
 
@@ -33,7 +34,13 @@ class MyApp extends StatelessWidget {
           title: new TextStyle(color: Colors.black, fontSize: 48),
         ),
       ),
-      home: Landing(title: 'SpotBuddy'),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => Landing(title: "Spotbuddy"),
+        '/login': (context) => LoginPage(title: "Spotbuddy Login"),
+        '/signin': (context) => SignUpPage(title: "Spotbuddy Sign Up"),
+        '/home': (context) => HomePage(title: "Spotbuddy"),
+      }
     );
   }
 }
@@ -50,10 +57,11 @@ class Landing extends StatefulWidget {
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
 
-  final String title;
+  
 
   @override
   _LandingState createState() => _LandingState();
+  final String title;
 }
 
 class _LandingState extends State<Landing> {

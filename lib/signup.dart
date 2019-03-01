@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:random_string/random_string.dart' as random;
+import 'dart:convert';
+import './homepage.dart';
 
 class SignUpPage extends StatefulWidget {
   SignUpPage({Key key, this.title}) : super(key: key);
@@ -49,31 +52,22 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   void _submitInfo() {
-    var url = "http://18.191.28.138/createProfile";
+    var url = "http://18.223.190.192/createProfile";
     //var url = "http://18.222.104.22/createProfile";
     setState(() {
-      if (fname.text=="")
-      {
+      if (fname.text == "") {
         _showDialog("First Name is not valid");
         return;
-      }
-      else if  (email.text=="" )
-      {
+      } else if (email.text == "") {
         _showDialog("Email is not valid");
         return;
-      }
-      else if (pass.text=="")
-      {
+      } else if (pass.text == "") {
         _showDialog("Password is not valid");
         return;
-      }
-      else if (bday.text=="")
-      {
+      } else if (bday.text == "") {
         _showDialog("Birthday is not valid");
         return;
-      }
-      else if (dln.text=="")
-      {
+      } else if (dln.text == "") {
         _showDialog("Drivers License Number is not valid");
         return;
       }
@@ -84,27 +78,59 @@ class _SignUpPageState extends State<SignUpPage> {
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
       print("first_name: " + fname.text);
+      String nameParam = fname.text;
       print("email: " + email.text);
+      String emailParam = email.text;
       print("pass: " + pass.text);
+      String passParam = pass.text;
       print("bday: " + bday.text);
+      String bdayParam = bday.text;
       print("dln: " + dln.text);
+      String dlnParam = dln.text;
 
-      // http.post(url, body: {
-      //   "first_name": "App Post",
-      //   "email": "app@app.com",
-      //   "pass": "******",
-      //   "birthday": "2-5-1978",
-      //   "messangerID": "SomeID",
-      //   "broadLocationID": "SomeID",
-      //   "focusedLocationID": "Some ID",
-      //   "biography": "Posting From App",
-      //   "isABuddy": "1",
-      //   "publicRating": "4.6",
-      //   "govtID": "Good Question"
-      // }).then((response) {
-      //   print("Response status: ${response.statusCode}");
-      //   print("Response body: ${response.body}");
-      // });
+      String messangerID = random.randomAlphaNumeric(16);
+      String broadLocationID = random.randomAlphaNumeric(16);
+      String focusedLocationID = random.randomAlphaNumeric(16);
+      String biography = random.randomAlphaNumeric(100);
+      String isABuddy = "0";
+      String publicRating = "5.0";
+
+      http.post(url, body: {
+        "first_name": nameParam,
+        "email": emailParam,
+        "pass": passParam,
+        "birthday": bdayParam,
+        "messangerID": messangerID,
+        "broadLocationID": broadLocationID,
+        "focusedLocationID": focusedLocationID,
+        "biography": biography,
+        "isABuddy": isABuddy,
+        "publicRating": publicRating,
+        "govtID": dlnParam
+      }).then((response) {
+        print("Response status: ${response.statusCode}");
+        print("Response body: ${response.body}");
+        String getURL = "http://18.223.190.192/signin/";
+        if (response.statusCode == 200) {
+          http
+              .get(getURL + '?email=' + email.text + '&pass=' + pass.text)
+              .then((getResponse) {
+            print("Response status: ${getResponse.statusCode}");
+            print("Response body: ${getResponse.body}");
+            var jsonString = '''
+          [ ${getResponse.body} ]''';
+            var scores = jsonDecode(jsonString);
+            if (getResponse.statusCode == 200) {
+              print(scores[0]);
+              if (scores[0]["accessToken"] != null) {
+                print("Signing in");
+                Navigator.popUntil(context, ModalRoute.withName('/'));
+                Navigator.pushReplacementNamed(context, '/home');
+              }
+            }
+          });
+        }
+      });
     });
   }
 
@@ -116,7 +142,7 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
       body: Center(
           child: ListView(
-          padding: EdgeInsets.symmetric(horizontal: 24.0),
+        padding: EdgeInsets.symmetric(horizontal: 24.0),
         children: <Widget>[
           //  RichText(
           //   text: TextSpan(text: 'First Name',
