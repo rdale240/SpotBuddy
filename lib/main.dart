@@ -4,6 +4,7 @@ import './login.dart';
 import './signup.dart';
 import './homepage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import './profile.dart';
 
 void main() => runApp(MyApp());
 
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
           // is not restarted.
           primarySwatch: Colors.lightGreen,
           textTheme: TextTheme(
-            body1: new TextStyle(color: Colors.red),
+            body1: new TextStyle(color: Colors.black),
             display1: new TextStyle(color: Colors.white),
             display2: new TextStyle(color: Colors.white),
             display3: new TextStyle(color: Colors.white),
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
           '/login': (context) => LoginPage(title: "Spotbuddy Login"),
           '/signin': (context) => SignUpPage(title: "Spotbuddy Sign Up"),
           '/home': (context) => HomePage(title: "Spotbuddy"),
+          '/profile': (context) => ProfilePage(title: "Profile"),
         });
   }
 }

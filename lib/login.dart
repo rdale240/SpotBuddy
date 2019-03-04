@@ -47,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
   void _login() {
-    var url = "http://18.223.190.192/signin/";
+    var url = "http://18.222.171.109/signin/";
     //var url = "http://18.222.104.22/createProfile";
     setState(() {
       // This call to setState tells the Flutter framework that something has
@@ -91,6 +91,7 @@ class _LoginPageState extends State<LoginPage> {
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title, style: TextStyle(color: Colors.white)),
+        backgroundColor: Color(0xFF306856),
       ),
       body: SafeArea(
         // Center is a layout widget. It takes a single child and positions it

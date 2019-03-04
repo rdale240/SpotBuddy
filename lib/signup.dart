@@ -52,7 +52,7 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   void _submitInfo() {
-    var url = "http://18.223.190.192/createProfile";
+    var url = "http://18.222.171.109/createProfile";
     //var url = "http://18.222.104.22/createProfile";
     setState(() {
       if (fname.text == "") {
@@ -110,7 +110,7 @@ class _SignUpPageState extends State<SignUpPage> {
       }).then((response) {
         print("Response status: ${response.statusCode}");
         print("Response body: ${response.body}");
-        String getURL = "http://18.223.190.192/signin/";
+        String getURL = "http://18.222.171.109/signin/";
         if (response.statusCode == 200) {
           http
               .get(getURL + '?email=' + email.text + '&pass=' + pass.text)
@@ -141,6 +141,7 @@ class _SignUpPageState extends State<SignUpPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title, style: TextStyle(color: Colors.white)),
+        backgroundColor: Color(0xFF306856),
       ),
       body: Center(
           child: ListView(
@@ -204,7 +205,7 @@ class _SignUpPageState extends State<SignUpPage> {
           SizedBox(height: 50.0),
           MaterialButton(
             child: Text("Create Account"),
-            color: Colors.lightGreen,
+            color: Color(0xFF306856),
             minWidth: 200,
             height: 80,
             shape: new RoundedRectangleBorder(
