@@ -127,6 +127,8 @@ class _SignUpPageState extends State<SignUpPage> {
                 Navigator.popUntil(context, ModalRoute.withName('/'));
                 Navigator.pushReplacementNamed(context, '/home');
               }
+            } else {
+              _showDialog("Error Creating Profile");
             }
           });
         }

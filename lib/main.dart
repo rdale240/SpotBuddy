@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import './login.dart';
 import './signup.dart';
 import './homepage.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 void main() => runApp(MyApp());
 
@@ -11,37 +12,36 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.lightGreen,
-        textTheme: TextTheme(
-          body1: new TextStyle(color: Colors.red),
-          display1: new TextStyle(color: Colors.white),
-          display2: new TextStyle(color: Colors.white),
-          display3: new TextStyle(color: Colors.white),
-          display4: new TextStyle(color: Colors.white),
-          body2: new TextStyle(color: Colors.white),
-          headline: new TextStyle(color: Colors.white),
-          title: new TextStyle(color: Colors.black, fontSize: 48),
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          // This is the theme of your application.
+          //
+          // Try running your application with "flutter run". You'll see the
+          // application has a blue toolbar. Then, without quitting the app, try
+          // changing the primarySwatch below to Colors.green and then invoke
+          // "hot reload" (press "r" in the console where you ran "flutter run",
+          // or simply save your changes to "hot reload" in a Flutter IDE).
+          // Notice that the counter didn't reset back to zero; the application
+          // is not restarted.
+          primarySwatch: Colors.lightGreen,
+          textTheme: TextTheme(
+            body1: new TextStyle(color: Colors.red),
+            display1: new TextStyle(color: Colors.white),
+            display2: new TextStyle(color: Colors.white),
+            display3: new TextStyle(color: Colors.white),
+            display4: new TextStyle(color: Colors.white),
+            body2: new TextStyle(color: Colors.white),
+            headline: new TextStyle(color: Colors.white),
+            title: new TextStyle(color: Colors.black, fontSize: 48),
+          ),
         ),
-      ),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => Landing(title: "Spotbuddy"),
-        '/login': (context) => LoginPage(title: "Spotbuddy Login"),
-        '/signin': (context) => SignUpPage(title: "Spotbuddy Sign Up"),
-        '/home': (context) => HomePage(title: "Spotbuddy"),
-      }
-    );
+        initialRoute: '/',
+        routes: {
+          '/': (context) => Landing(title: "Spotbuddy"),
+          '/login': (context) => LoginPage(title: "Spotbuddy Login"),
+          '/signin': (context) => SignUpPage(title: "Spotbuddy Sign Up"),
+          '/home': (context) => HomePage(title: "Spotbuddy"),
+        });
   }
 }
 
@@ -57,11 +57,11 @@ class Landing extends StatefulWidget {
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
 
-  
-
   @override
   _LandingState createState() => _LandingState();
   final String title;
+  final String logoAsset = 'assets/SpotBuddy_Logo_T.png';
+  final Color logoColor =Color(0xFF306856);
 }
 
 class _LandingState extends State<Landing> {
@@ -107,11 +107,13 @@ class _LandingState extends State<Landing> {
                 child: new Text('SpotBuddy',
                     style: Theme.of(context).textTheme.title),
                 alignment: Alignment(0.0, 0.0)),
-            SizedBox(height: 200.0), // Space for Logo
-            SizedBox(height: 120.0),
+            Image.asset(widget.logoAsset,
+            height: 360.0,
+            ), // Space for Logo
+            SizedBox(height: 0),
             MaterialButton(
-              child: Text("Login"),
-              color: Colors.lightGreen,
+              child: Text("Login",style: TextStyle(color:Color(0xFFFFFFFF)),),
+              color: widget.logoColor,
               minWidth: 200,
               height: 80,
               shape: new RoundedRectangleBorder(
@@ -127,8 +129,8 @@ class _LandingState extends State<Landing> {
             ),
             SizedBox(height: 40.0),
             MaterialButton(
-              child: Text("Sign Up"),
-              color: Colors.lightGreenAccent,
+              child: Text("Sign Up",style: TextStyle(color:Color(0xFFFFFFFF)),),
+              color: widget.logoColor,
               minWidth: 200,
               height: 80,
               clipBehavior: Clip.antiAlias,
