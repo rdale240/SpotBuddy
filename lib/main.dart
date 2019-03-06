@@ -5,6 +5,7 @@ import './signup.dart';
 import './homepage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import './profile.dart';
+import 'dart:io';
 
 void main() => runApp(MyApp());
 
@@ -63,20 +64,35 @@ class Landing extends StatefulWidget {
   _LandingState createState() => _LandingState();
   final String title;
   final String logoAsset = 'assets/SpotBuddy_Logo_T.png';
-  final Color logoColor =Color(0xFF306856);
+  final Color logoColor = Color(0xFF306856);
 }
 
 class _LandingState extends State<Landing> {
   void _Log() {
-    print('print: Login Press');
+    print("Landing - " +'Login Press');
   }
 
   void _Create() {
-    print('print: Create Press');
+    print("Landing - " + 'Create Press');
+  }
+
+  Future pageLog() async {
+    var file = new File('Logs/Log.txt');
+    var contents = file.openWrite();
+    contents.write("SpotBuddy App Launched");
+    contents.flush();
+    contents.close();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    pageLog();
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -109,12 +125,16 @@ class _LandingState extends State<Landing> {
                 child: new Text('SpotBuddy',
                     style: Theme.of(context).textTheme.title),
                 alignment: Alignment(0.0, 0.0)),
-            Image.asset(widget.logoAsset,
-            height: 360.0,
+            Image.asset(
+              widget.logoAsset,
+              height: 360.0,
             ), // Space for Logo
             SizedBox(height: 0),
             MaterialButton(
-              child: Text("Login",style: TextStyle(color:Color(0xFFFFFFFF)),),
+              child: Text(
+                "Login",
+                style: TextStyle(color: Color(0xFFFFFFFF)),
+              ),
               color: widget.logoColor,
               minWidth: 200,
               height: 80,
@@ -131,7 +151,10 @@ class _LandingState extends State<Landing> {
             ),
             SizedBox(height: 40.0),
             MaterialButton(
-              child: Text("Sign Up",style: TextStyle(color:Color(0xFFFFFFFF)),),
+              child: Text(
+                "Sign Up",
+                style: TextStyle(color: Color(0xFFFFFFFF)),
+              ),
               color: widget.logoColor,
               minWidth: 200,
               height: 80,

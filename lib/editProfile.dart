@@ -5,46 +5,43 @@ import 'dart:convert';
 import './homepage.dart';
 
 class EditProfilePage extends StatefulWidget {
-  EditProfilePage({Key key, this.title}) : super(key: key);
+  EditProfilePage({Key key, this.title, this.uid, this.name, this.uBio}) : super(key: key);
   @override
   _EditProfilePageState createState() => _EditProfilePageState();
 
+
   final String title;
+  final String uid;
+  final String name;
+  final String uBio;
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
-  String url = "http://18.222.171.109/updateProfile/";
+  String url = "http://3.18.95.167/updateProfile/";
   TextEditingController bio = TextEditingController();
   var list;
   String fname;
   String biography;
 
+ 
+
   void _initializePage(){
-    http.get(url + '?uid='+'14' ).then((response) {
-      list = json.decode(response.body);
-        print(list[0]["first_name"]);
-          fname = list[0]["first_name"];
-          bio = list[0]["biography"];        
-        print("Response status: ${response.statusCode}");
-        print("Response body: ${response.body}");
-    });
+    bio.text =widget.uBio;
   }
+
 
   void _updatePage(){
     _initializePage();
-    setState(() {
-      
-    });
   }
 
-  void _saveChanges() {
+  void _saveChanges(String uid) {
     http.post(url, body: {
         "biography":bio.text,
-        "uid":"14",
+        "uid":uid,
       } ).then((response) {
-        print("Response status: ${response.statusCode}");
-        print("Response body: ${response.body}");
-        Navigator.pop(context);
+        print("Edit Profile  - " +"Response status: ${response.statusCode}");
+        print("Edit Profile  - " +"Response body: ${response.body}");
+        Navigator.of(context).pop('String');
     });
   }
 
@@ -52,7 +49,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   Widget build(BuildContext context) {
     //bio.text = random.randomAlpha(500);
-    
+    if (this.fname == null)
+    {
+    _updatePage();
+    }
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.title, style: TextStyle(color: Colors.white)),
@@ -62,7 +62,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 icon: Icon(IconData(57697, fontFamily: 'MaterialIcons')),
                 color: Colors.white,
                 tooltip: 'Profile',
-                onPressed: () {_saveChanges();})
+                onPressed: () {_saveChanges(widget.uid);})
           ],
         ),
         body: ListView(
@@ -79,7 +79,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Text("Name"),
+                    Text(this.fname ?? widget.name),
                     SizedBox(height: 16.0),
                     Text("Age Gender"),
                     SizedBox(height: 16.0),
@@ -100,7 +100,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 SizedBox(height: 16.0),
                 TextField(
                   controller: bio,
-                  onChanged: (text) => bio.text=text,
+                  //onChanged: (t) => bio.text =t,
                   style: Theme.of(context).textTheme.body1,
                   keyboardType: TextInputType.multiline,
                   maxLines: 10,

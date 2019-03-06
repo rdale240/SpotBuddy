@@ -6,40 +6,51 @@ import './homepage.dart';
 import './editProfile.dart';
 
 class ProfilePage extends StatefulWidget {
-  ProfilePage({Key key, this.title}) : super(key: key);
+  ProfilePage({Key key, this.title, this.uid}) : super(key: key);
   @override
   _ProfilePageState createState() => _ProfilePageState();
 
   final String title;
+  final String uid;
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  String url = "http://18.222.171.109/getProfile/";
+  String url = "http://3.18.95.167/getProfile/";
   String fname = "";
   String bio = "";
-  List list;
-  
-  void _initializePage(){
-    http.get(url + '?uid='+'14' ).then((response) {
-      list = json.decode(response.body);
-        print(list[0]["first_name"]);
-          fname = list[0]["first_name"];
-          bio = list[0]["biography"];        
-        print("Response status: ${response.statusCode}");
-        print("Response body: ${response.body}");
-    });
+  List list = List();
+
+   void initState() {
+    super.initState();
+    _initializePage();
   }
 
-  void _updatePage(){
-    _initializePage();
-    setState(() {
-      
+  void _initializePage() {
+   http.get(url + '?uid=' + widget.uid).then((response){
+      this.list = json.decode(response.body);
+      print(this.list[0]["first_name"]);
+      print("Profile - " +"Response status: ${response.statusCode}");
+      print("Profile - " +"Response body: ${response.body}");
+      setState(() {
+        this.fname=list[0]["first_name"];
+        this.bio=list[0]["biography"];
     });
+    });
+
+    
+    
   }
+
+  _updatePage(){
+    _initializePage();
+    print("Update List ${this.list}");
+    
+    
+  }
+
 
   @override
   Widget build(BuildContext context) {
-    _initializePage();
     return Scaffold(
         appBar: AppBar(
           title: Text("Profile", style: TextStyle(color: Colors.white)),
@@ -57,13 +68,25 @@ class _ProfilePageState extends State<ProfilePage> {
                       height: 100.0,
                     ),
                     MaterialButton(
-                      child:Text("Edit Profile", style: TextStyle(color:Colors.white),),
-                      color:Color(0xFF306856),
-                      onPressed: (){
-                        Navigator.push(context, 
-                         MaterialPageRoute(builder: (BuildContext context) => EditProfilePage(title: "Edit Profile")));
-                      }                     
-                    )
+                        child: Text(
+                          "Edit Profile",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        color: Color(0xFF306856),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      EditProfilePage(
+                                        title: "Edit Profile",
+                                        uid: widget.uid,
+                                        name: this.fname ?? '',
+                                        uBio: this.bio ?? '',
+                                      ))).then((v) {
+                                          _updatePage();
+                                      });
+                        })
                   ],
                 ),
                 SizedBox(width: 48.0),
@@ -90,8 +113,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   style: Theme.of(context).textTheme.title,
                 ),
                 SizedBox(height: 16.0),
-                Text(bio,
-                    style: Theme.of(context).textTheme.body1),
+                Text(bio, style: Theme.of(context).textTheme.body1),
                 SizedBox(height: 16.0),
                 Text(
                   "Interests",

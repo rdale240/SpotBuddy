@@ -52,7 +52,7 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   void _submitInfo() {
-    var url = "http://18.222.171.109/createProfile";
+    var url = "http://3.18.95.167/createProfile";
     //var url = "http://18.222.104.22/createProfile";
     setState(() {
       if (fname.text == "") {
@@ -77,15 +77,15 @@ class _SignUpPageState extends State<SignUpPage> {
       // so that the display can reflect the updated values. If we changed
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
-      print("first_name: " + fname.text);
+      print("Sign Up - " + "first_name: " + fname.text);
       String nameParam = fname.text;
-      print("email: " + email.text);
+      print("Sign Up - " + "email: " + email.text);
       String emailParam = email.text;
-      print("pass: " + pass.text);
+      print("Sign Up - " + "pass: " + pass.text);
       String passParam = pass.text;
-      print("bday: " + bday.text);
+      print("Sign Up - " + "bday: " + bday.text);
       String bdayParam = bday.text;
-      print("dln: " + dln.text);
+      print("Sign Up - " + "dln: " + dln.text);
       String dlnParam = dln.text;
 
       String messangerID = random.randomAlphaNumeric(16);
@@ -108,24 +108,26 @@ class _SignUpPageState extends State<SignUpPage> {
         "publicRating": publicRating,
         "govtID": dlnParam
       }).then((response) {
-        print("Response status: ${response.statusCode}");
-        print("Response body: ${response.body}");
-        String getURL = "http://18.222.171.109/signin/";
+        print("Sign Up - " + "Response status: ${response.statusCode}");
+        print("Sign Up - " + "Response body: ${response.body}");
+        String getURL = "http://3.18.95.167/signin/";
         if (response.statusCode == 200) {
           http
               .get(getURL + '?email=' + email.text + '&pass=' + pass.text)
               .then((getResponse) {
-            print("Response status: ${getResponse.statusCode}");
-            print("Response body: ${getResponse.body}");
+            print("Sign Up - " + "Response status: ${getResponse.statusCode}");
+            print("Sign Up - " + "Response body: ${getResponse.body}");
             var jsonString = '''
           [ ${getResponse.body} ]''';
-            var scores = jsonDecode(jsonString);
+            var acct = jsonDecode(jsonString);
             if (getResponse.statusCode == 200) {
-              print(scores[0]);
-              if (scores[0]["accessToken"] != null) {
-                print("Signing in");
+              print(acct[0]);
+              var acctUID = acct[0]["uid"];
+              if (acct[0]["accessToken"] != null) {
+                print("Sign Up - " + "Signing in with " + acctUID);
                 Navigator.popUntil(context, ModalRoute.withName('/'));
-                Navigator.pushReplacementNamed(context, '/home');
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => HomePage(title: "SpotBuddy", uid:acctUID)));
+            
               }
             } else {
               _showDialog("Error Creating Profile");

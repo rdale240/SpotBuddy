@@ -47,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
   void _login() {
-    var url = "http://18.222.171.109/signin/";
+    var url = "http://3.18.95.167/signin/";
     //var url = "http://18.222.104.22/createProfile";
     setState(() {
       // This call to setState tells the Flutter framework that something has
@@ -57,19 +57,21 @@ class _LoginPageState extends State<LoginPage> {
       // called again, and so nothing would appear to happen.
       http
           .get(url + '?email=' + email.text + '&pass=' + pass.text)
-          .then((response) {
-        print("Response status: ${response.statusCode}");
-        print("Response body: ${response.body}");
+          .then((getResponse) {
+        print("Log In - " +"Response status: ${getResponse.statusCode}");
+        print("Log In - " +"Response body: ${getResponse.body}");
         var jsonString = '''
-          [ ${response.body} ]''';
-        var scores = jsonDecode(jsonString);
-        if (response.statusCode == 200) {
-          print(scores[0]);
-          if (scores[0]["accessToken"] != null) {
-            print("Signing in");
-            Navigator.popUntil(context, ModalRoute.withName('/'));
-            Navigator.pushReplacementNamed(context, '/home');
-      }
+          [ ${getResponse.body} ]''';
+        var acct = jsonDecode(jsonString);
+            if (getResponse.statusCode == 200) {
+              print("Log In - " +acct[0]);
+              var acctUID = acct[0]["uid"];
+              if (acct[0]["accessToken"] != null) {
+                print("Log In - " +"Signing in with " + acctUID);
+                Navigator.popUntil(context, ModalRoute.withName('/'));
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => HomePage(title: "SpotBuddy", uid:acctUID)));
+            
+              }
           }
         else {
           _showDialog("Email or Password is Incorrect");

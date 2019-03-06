@@ -5,45 +5,66 @@ import 'dart:convert';
 
 class HomePage extends StatefulWidget {
   final String title;
-  HomePage({Key key, this.title}) : super(key: key);
+  final String uid;
+  HomePage({Key key, this.title, this.uid}) : super(key: key);
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  String url = "http://18.222.171.109/getProfile/";
+  String url = "http://3.18.95.167/getProfile/";
   String fname = "";
   String bio = "";
   List list;
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _initializePage();
+  }
+
   void _initializePage() {
-    http.get(url + '?uid=' + '14').then((response) {
-      list = json.decode(response.body);
+    print("HomePage  - " +widget.uid);
+    http.get(url + '?uid=' + widget.uid).then((response) {
+      list = json.decode(response.body) as List;
       print(list[0]["first_name"]);
+      print("HomePage  - " +"Response status: ${response.statusCode}");
+      print("HomePage  - " +"Response body: ${response.body}");
+      setState(() {
       fname = list[0]["first_name"];
       bio = list[0]["biography"];
-      print("Response status: ${response.statusCode}");
-      print("Response body: ${response.body}");
     });
+    });
+    
   }
 
   void _updatePage() {
     _initializePage();
-    setState(() {});
+    print("List: ${this.list}");
+    
+    
   }
 
   void _goToProfile() {
     print("Hello World");
-    Navigator.pushNamed(context, '/profile');
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) =>
+                ProfilePage(title: fname + "'s Profile", uid: widget.uid)));
   }
 
   @override
   Widget build(BuildContext context) {
-    _updatePage();
     return Scaffold(
         appBar: AppBar(
-            title: Text("Welcome " + fname),
+            title: Text(
+              widget.title,
+              style: TextStyle(color: Colors.white),
+            ),
             backgroundColor: Color(0xFF306856),
+            iconTheme: new IconThemeData(color: Colors.white),
             actions: <Widget>[
               IconButton(
                 icon: Icon(IconData(58714, fontFamily: 'MaterialIcons')),
@@ -56,7 +77,7 @@ class _HomePageState extends State<HomePage> {
             ]),
         drawer: Drawer(), //this will just add the Navigation Drawer Icon
         body: Center(
-          child: Text("Home Page"),
+          child: Text("Welcome " + fname),
         ));
   }
 }
