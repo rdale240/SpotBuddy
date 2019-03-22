@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import './homepage.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key, this.title}) : super(key: key);
@@ -47,7 +48,9 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
   void _login() {
-    var url = "http://3.18.95.167/signin/";
+    var url = DotEnv().env['SIGNINURL'].toString();
+    print(url);
+    //var url = "http://3.18.95.167/signin/";
     //var url = "http://18.222.104.22/createProfile";
     setState(() {
       // This call to setState tells the Flutter framework that something has
@@ -63,8 +66,9 @@ class _LoginPageState extends State<LoginPage> {
         var jsonString = '''
           [ ${getResponse.body} ]''';
         var acct = jsonDecode(jsonString);
+        print(acct[0]['uid']);
             if (getResponse.statusCode == 200) {
-              print("Log In - " +acct[0]);
+              print("Log In - " +acct[0].toString());
               var acctUID = acct[0]["uid"];
               if (acct[0]["accessToken"] != null) {
                 print("Log In - " +"Signing in with " + acctUID);

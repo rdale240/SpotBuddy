@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import './profile.dart';
+import './maps.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
 
 class HomePage extends StatefulWidget {
   final String title;
@@ -17,6 +19,9 @@ class _HomePageState extends State<HomePage> {
   String bio = "";
   List list;
 
+
+  
+
   @override
   void initState() {
     // TODO: implement initState
@@ -24,26 +29,25 @@ class _HomePageState extends State<HomePage> {
     _initializePage();
   }
 
+  
+
   void _initializePage() {
-    print("HomePage  - " +widget.uid);
+    print("HomePage  - " + widget.uid);
     http.get(url + '?uid=' + widget.uid).then((response) {
       list = json.decode(response.body) as List;
       print(list[0]["first_name"]);
-      print("HomePage  - " +"Response status: ${response.statusCode}");
-      print("HomePage  - " +"Response body: ${response.body}");
+      print("HomePage  - " + "Response status: ${response.statusCode}");
+      print("HomePage  - " + "Response body: ${response.body}");
       setState(() {
-      fname = list[0]["first_name"];
-      bio = list[0]["biography"];
+        fname = list[0]["first_name"];
+        bio = list[0]["biography"];
+      });
     });
-    });
-    
   }
 
   void _updatePage() {
     _initializePage();
     print("List: ${this.list}");
-    
-    
   }
 
   void _goToProfile() {
@@ -77,7 +81,7 @@ class _HomePageState extends State<HomePage> {
             ]),
         drawer: Drawer(), //this will just add the Navigation Drawer Icon
         body: Center(
-          child: Text("Welcome " + fname),
+          child: MapSample(),
         ));
   }
 }
