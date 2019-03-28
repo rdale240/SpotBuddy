@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.lightGreen,
           textTheme: TextTheme(
             body1: new TextStyle(color: Colors.black),
-            display1: new TextStyle(color: Colors.white),
+            display1: new TextStyle(color: Colors.black,fontSize: 32),
             display2: new TextStyle(color: Colors.white),
             display3: new TextStyle(color: Colors.white),
             display4: new TextStyle(color: Colors.white),

@@ -6,6 +6,7 @@ import 'package:geo_location_finder/geo_location_finder.dart';
 import 'package:flutter/services.dart';
 import './eventItem.dart';
 import 'package:random_string/random_string.dart' as random;
+import './eventPage.dart';
 
 class MapSample extends StatefulWidget {
   @override
@@ -84,9 +85,15 @@ class MapSampleState extends State<MapSample> {
           markerId: MarkerId(random.randomAlpha(8)),
           position: LatLng(f.lat, f.long),
           infoWindow: InfoWindow(
-            title: f.title,
-            snippet: f.uid + " - " + f.description,
-          ),
+              title: f.title,
+              snippet: f.uid + " - " + f.description,
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            EventPage(eventData: f, eventID: f.uid)));
+              }),
           icon: BitmapDescriptor.defaultMarker,
         ));
       });
