@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 import './eventItem.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:random_string/random_string.dart' as random;
 
 class EventPage extends StatefulWidget {
@@ -13,10 +15,76 @@ class EventPage extends StatefulWidget {
 }
 
 class _EventPageState extends State<EventPage> {
-  double _userRating;
+  double _hostRating;
+  var event;
+  var user;
+  String _hostName="";
+  String _hostLocation="";
+  String _title="";
+  String _timeString="";
+  String _description="";
+  String _address="";
+
+  void initState(){
+    super.initState();
+    _getEvent();
+    
+  }
+
+  _getEvent() {
+    http
+        .get('http://3.18.95.167/getEvent' + '?eventID=' + widget.eventID)
+        .then((getResponse) {
+      print("Get Event - " + "Response status: ${getResponse.statusCode}");
+      print("Get Event - " + "Response body: ${getResponse.body}");
+      var jsonString = '''
+          ${getResponse.body}''';
+      event = jsonDecode(jsonString);
+      print(event[0]);
+      //print(event[0]['eventID']);
+      if (getResponse.statusCode == 200) {
+         
+        setState(() {
+          _title = event[0]['title'];
+          _timeString = event[0]['timeStart'].toString() +
+              ' -  ' +
+              event[0]['timeEnd'].toString();
+          _description =event[0]['description'];
+          _address=event[0]['address'];
+        });
+        _getProfile(event); 
+        print("Log In - " + event[0].toString());
+      } else {
+        Navigator.pop(context);
+      }
+    });
+  }
+
+  _getProfile(event) {
+    http
+        .get('http://3.18.95.167/getProfile' + '?uid=' + event[0]['hostUID'])
+        .then((getResponse) {
+      print("Get Event - " + "Response status: ${getResponse.statusCode}");
+      print("Get Event - " + "Response body: ${getResponse.body}");
+      var jsonString = '''
+          ${getResponse.body}''';
+      user = jsonDecode(jsonString);
+      print(user[0]['first_name']);
+      if (getResponse.statusCode == 200) {
+        setState(() {
+          _hostName = user[0]['first_name'];
+          _hostLocation = user[0]['broadLocationID'];
+          _hostRating=user[0]['publicRating'];
+        });
+        print(_hostRating);
+        print("Log In - " + user[0].toString());
+      } else {}
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    _userRating = 4.5;
+    _hostRating=4.8;
     return Scaffold(
         appBar: AppBar(
           // Here we take the value from the MyHomePage object that was created by
@@ -49,7 +117,7 @@ class _EventPageState extends State<EventPage> {
                     height: MediaQuery.of(context).size.width * .35,
                     child: Padding(
                       child: Text(
-                        widget.eventData.title,
+                        _title,
                         style: Theme.of(context).textTheme.display1,
                       ),
                       padding: EdgeInsets.symmetric(
@@ -69,9 +137,9 @@ class _EventPageState extends State<EventPage> {
                               backgroundImage: AssetImage('./assets/user.png'),
                               radius: MediaQuery.of(context).size.width * .1,
                             )),
-                        Text("Host Name",
+                        Text(_hostName,
                             style: Theme.of(context).textTheme.body1),
-                        Text("Host Location",
+                        Text(_hostLocation,
                             style: Theme.of(context).textTheme.body1),
                         SmoothStarRating(
                           allowHalfRating: false,
@@ -80,7 +148,7 @@ class _EventPageState extends State<EventPage> {
                           //   setState(() {});
                           // },
                           starCount: 5,
-                          rating: _userRating,
+                          rating: _hostRating,
                           size: 20.0,
                           color: Colors.yellow,
                           borderColor: Colors.green,
@@ -95,15 +163,15 @@ class _EventPageState extends State<EventPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text("Time: 10:00 PM - 12:00 PM"),
+                    Text("Time: " + _timeString.toString()),
                     SizedBox(
                       height: 24,
                     ),
-                    Text("Location: McDonalds Coral Gables"),
+                    Text("Location: " + _address),
                     SizedBox(
                       height: 24,
                     ),
-                    Text(widget.eventData.description),
+                    Text(_description),
                     SizedBox(
                       height: 24,
                     ),
