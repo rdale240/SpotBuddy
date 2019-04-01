@@ -9,6 +9,10 @@ import 'package:random_string/random_string.dart' as random;
 import './eventPage.dart';
 
 class MapSample extends StatefulWidget {
+  final String uid;
+  
+  MapSample({Key key, this.uid}) : super(key: key);
+
   @override
   State<MapSample> createState() => MapSampleState();
 }
@@ -92,7 +96,7 @@ class MapSampleState extends State<MapSample> {
                     context,
                     MaterialPageRoute(
                         builder: (BuildContext context) =>
-                            EventPage(eventData: f, eventID: f.uid)));
+                            EventPage(eventData: f, eventID: f.uid, uid:widget.uid)));
               }),
           icon: BitmapDescriptor.defaultMarker,
         ));
@@ -146,6 +150,8 @@ class MapSampleState extends State<MapSample> {
 
   @override
   Widget build(BuildContext context) {
+
+    print(widget.uid);
     CameraPosition userPos = CameraPosition(
         bearing: 0, target: LatLng(_userLat, _userLong), tilt: 0, zoom: 17.5);
 

@@ -4,7 +4,7 @@ import './login.dart';
 import './signup.dart';
 import './homepage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import './profile.dart';
+import './selfProfile.dart';
 import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
