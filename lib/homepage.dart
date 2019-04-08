@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import './selfProfile.dart';
 import './maps.dart';
 import './friendfinder.dart';
+import './createEvent.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -103,7 +104,23 @@ class _HomePageState extends State<HomePage> {
                           builder: (BuildContext context) =>
                               ListPage(title: "Nearby")));
                 },
-              )
+              ),
+              ListTile(
+                  title: Text(
+                    "Create Event",
+                    style: Theme.of(context).textTheme.body1,
+                  ),
+                  trailing: Icon(Icons.add_location),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                CreateEvent()
+                        )
+                    );
+                  },
+                  ),
             ],
           ),
         ), //this will just add the Navigation Drawer Icon
