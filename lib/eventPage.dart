@@ -8,10 +8,13 @@ import 'package:random_string/random_string.dart' as random;
 
 class EventPage extends StatefulWidget {
   final String eventID;
-  final EventData eventData;
+  //final EventData eventData;
   final String uid;
 
-  EventPage({Key key, this.eventID, this.eventData, this.uid})
+
+
+  EventPage({Key key, this.eventID
+  , this.uid})
       : super(key: key);
   @override
   _EventPageState createState() => _EventPageState();

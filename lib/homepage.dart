@@ -116,7 +116,7 @@ class _HomePageState extends State<HomePage> {
                         context,
                         MaterialPageRoute(
                             builder: (BuildContext context) =>
-                                CreateEvent()
+                                CreateEvent(uid:widget.uid)
                         )
                     );
                   },

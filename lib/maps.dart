@@ -96,7 +96,7 @@ class MapSampleState extends State<MapSample> {
                     context,
                     MaterialPageRoute(
                         builder: (BuildContext context) =>
-                            EventPage(eventData: f, eventID: f.uid, uid:widget.uid)));
+                            EventPage(eventID: f.uid, uid:widget.uid)));
               }),
           icon: BitmapDescriptor.defaultMarker,
         ));
@@ -157,7 +157,7 @@ class MapSampleState extends State<MapSample> {
 
     return new Scaffold(
       body: GoogleMap(
-        mapType: MapType.hybrid,
+        mapType: MapType.satellite,
         markers: _markers,
         initialCameraPosition: userPos,
         onMapCreated: (GoogleMapController controller) {
