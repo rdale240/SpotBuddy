@@ -11,11 +11,7 @@ class EventPage extends StatefulWidget {
   //final EventData eventData;
   final String uid;
 
-
-
-  EventPage({Key key, this.eventID
-  , this.uid})
-      : super(key: key);
+  EventPage({Key key, this.eventID, this.uid}) : super(key: key);
   @override
   _EventPageState createState() => _EventPageState();
 }
@@ -28,6 +24,7 @@ class _EventPageState extends State<EventPage> {
   String _hostLocation = "";
   String _title = "";
   String _timeString = "";
+  String _dateString = "";
   String _description = "";
   String _address = "";
 
@@ -50,15 +47,16 @@ class _EventPageState extends State<EventPage> {
       //print(event[0]['eventID']);
       if (getResponse.statusCode == 200) {
         setState(() {
+          _getProfile(event);
+          print("Log In - " + event[0].toString());
           _title = event[0]['title'];
           _timeString = event[0]['timeStart'].toString() +
               ' -  ' +
               event[0]['timeEnd'].toString();
           _description = event[0]['description'];
           _address = event[0]['address'];
+          _dateString=event[0]['date'];
         });
-        _getProfile(event);
-        print("Log In - " + event[0].toString());
       } else {
         Navigator.pop(context);
       }
@@ -79,7 +77,7 @@ class _EventPageState extends State<EventPage> {
         setState(() {
           _hostName = user[0]['first_name'];
           _hostLocation = user[0]['broadLocationID'];
-          _hostRating = user[0]['publicRating'];
+          _hostRating = user[0]['publicRating'].toDouble();
         });
         print(_hostRating);
         print("Log In - " + user[0].toString());
@@ -133,6 +131,9 @@ class _EventPageState extends State<EventPage> {
   @override
   Widget build(BuildContext context) {
     double _tempRating = 4.8;
+    setState(() {
+      
+    });
     return Scaffold(
         appBar: AppBar(
           // Here we take the value from the MyHomePage object that was created by
@@ -201,7 +202,7 @@ class _EventPageState extends State<EventPage> {
                             rating: _hostRating ?? _tempRating,
                             size: 20.0,
                             color: Colors.yellow,
-                            borderColor: Colors.green,
+                            borderColor: Colors.yellow,
                           )
                         ]),
                         onTap: () {
@@ -211,9 +212,10 @@ class _EventPageState extends State<EventPage> {
                               MaterialPageRoute(
                                   builder: (BuildContext context) =>
                                       OtherProfilePage(
-                                          title: "Host Profile",
-                                          uid: user[0]["uid"].toString(),
-                                          userUID: widget.uid,)));
+                                        title: "Host Profile",
+                                        uid: user[0]["uid"].toString(),
+                                        userUID: widget.uid,
+                                      )));
                         },
                       ),
                       padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
@@ -226,6 +228,10 @@ class _EventPageState extends State<EventPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
+                    Text("date: " + _dateString.toString() ?? "Loading..."),
+                    SizedBox(
+                      height: 24,
+                    ),
                     Text("Time: " + _timeString.toString()),
                     SizedBox(
                       height: 24,
@@ -234,7 +240,7 @@ class _EventPageState extends State<EventPage> {
                     SizedBox(
                       height: 24,
                     ),
-                    Text(_description),
+                    Text("Description: " + _description),
                     SizedBox(
                       height: 24,
                     ),

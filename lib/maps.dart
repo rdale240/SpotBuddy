@@ -1,16 +1,19 @@
 import 'dart:async';
-
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geo_location_finder/geo_location_finder.dart';
 import 'package:flutter/services.dart';
+import 'package:geocoder/geocoder.dart';
 import './eventItem.dart';
 import 'package:random_string/random_string.dart' as random;
 import './eventPage.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'dart:convert';
 
 class MapSample extends StatefulWidget {
   final String uid;
-  
+
   MapSample({Key key, this.uid}) : super(key: key);
 
   @override
@@ -23,6 +26,7 @@ class MapSampleState extends State<MapSample> {
   double _userLong;
   Set<Marker> _markers = new Set();
   Set<EventData> events = new Set();
+  var eventURL = DotEnv().env['ALLEVENTSURL'].toString();
 
   static final EventData event1 = EventData(
       title: "Jazz Club",
@@ -74,34 +78,54 @@ class MapSampleState extends State<MapSample> {
     _getLocation();
   }
 
-  void _onAddMarkerButtonPressed() {
-    setState(() {
-      events.clear();
+  Future<void> _onAddMarkerButtonPressed() async {
+
+
+    http.get(eventURL).then((response) {
+      print(response);
+      var jsonString = '''
+          [ ${response.body} ]''';
+      var jsonevents = jsonDecode(jsonString);
+      var listings = jsonevents[0];
+      print(events);
+          setState(() {
       _markers.clear();
-      events.add(event1);
-      events.add(event2);
-      events.add(event3);
-      events.add(event4);
-      events.add(event5);
-      events.forEach((f) {
-        _markers.add(Marker(
-          // This marker id can be anything that uniquely identifies each marker.
-          markerId: MarkerId(random.randomAlpha(8)),
-          position: LatLng(f.lat, f.long),
-          infoWindow: InfoWindow(
-              title: f.title,
-              snippet: f.uid + " - " + f.description,
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            EventPage(eventID: f.uid, uid:widget.uid)));
-              }),
-          icon: BitmapDescriptor.defaultMarker,
-        ));
+    });
+      listings.forEach((event) {
+        print(event);
+        var locationInfo =
+            Geocoder.local.findAddressesFromQuery(event['address']);
+        locationInfo.then((value) {
+          var location = value.first;
+          print(location.coordinates.latitude);
+          print(location.coordinates.longitude);
+          var position = LatLng(
+              location.coordinates.latitude, location.coordinates.longitude);
+          _markers.add(Marker(
+            // This marker id can be anything that uniquely identifies each marker.
+            markerId: MarkerId(random.randomAlpha(8)),
+            position: position,
+            infoWindow: InfoWindow(
+                title: event['title'],
+                snippet: event['description'].toString(),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => EventPage(
+                              eventID: event['eventID'].toString(),
+                              uid: widget.uid)));
+                }),
+            icon: BitmapDescriptor.defaultMarker,
+          ));
+          setState(() {
+          
+        });
+        });
+        
       });
     });
+   
   }
 
   Future<void> _getLocation() async {
@@ -150,14 +174,12 @@ class MapSampleState extends State<MapSample> {
 
   @override
   Widget build(BuildContext context) {
-
-    print(widget.uid);
     CameraPosition userPos = CameraPosition(
         bearing: 0, target: LatLng(_userLat, _userLong), tilt: 0, zoom: 17.5);
 
     return new Scaffold(
       body: GoogleMap(
-        mapType: MapType.satellite,
+        mapType: MapType.normal,
         markers: _markers,
         initialCameraPosition: userPos,
         onMapCreated: (GoogleMapController controller) {

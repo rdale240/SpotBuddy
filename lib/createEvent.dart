@@ -27,6 +27,8 @@ class _CreateEventState extends State<CreateEvent> {
   String eventTitle = "";
   TextEditingController event = TextEditingController();
   String maxAttendees = "";
+  String date = "";
+  TextEditingController dat = TextEditingController();
   TextEditingController attendees = TextEditingController();
   String timeStart = "";
   TextEditingController tStart = TextEditingController();
@@ -67,7 +69,7 @@ class _CreateEventState extends State<CreateEvent> {
   _createEvent() {
     String location = address;
     print(location);
-    String date = "4/12/19";
+    String date = this.date;
     print(date);
     String timeStart = "1400"; //tStart.text;
     print(timeStart);
@@ -182,6 +184,21 @@ class _CreateEventState extends State<CreateEvent> {
                       setState(() {
                         eventTitle = event.text;
                         print(eventTitle);
+                      });
+                    },
+                  ),
+                  SizedBox(height: 50.0),
+                  TextField(
+                    controller: dat,
+                    decoration: InputDecoration(
+                      labelText: "Date MM/DD",
+                      hasFloatingPlaceholder: true,
+                      filled: true,
+                    ),
+                    onChanged: (x) {
+                      setState(() {
+                        date = dat.text;
+                        print(date);
                       });
                     },
                   ),
