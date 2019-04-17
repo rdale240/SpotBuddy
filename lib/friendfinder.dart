@@ -13,8 +13,7 @@ import 'dart:async';
 
 class User {
   const User(
-      {
-      this.locationID,
+      {this.uid,
       this.name,
       this.age,
       this.gender,
@@ -24,7 +23,7 @@ class User {
       this.lat,
       this.lon});
 
-  final String locationID;
+  final String uid;
   final String name;
   final int age;
   final String gender;
@@ -36,9 +35,10 @@ class User {
 }
 
 class ListPage extends StatefulWidget {
-  ListPage({Key key, this.title}) : super(key: key);
+  ListPage({Key key, this.title, this.uid}) : super(key: key);
 
   final String title;
+  final String uid;
 
   @override
   _ListPageState createState() => _ListPageState();
@@ -54,63 +54,62 @@ class _ListPageState extends State<ListPage> {
   @override
   void initState() {
     _getLocation();
-    users =getUsers();
+    getUsers();
+    print(users);
     super.initState();
   }
 
-List getUsers() {
-  List userList = [];
-  var locationResults;
-  double lat;
-  double long;
-  var profiles;
-  // 
+  Future<List> getUsers() async {
+    if (users == null) {
+      List userList = [];
+      var locationResults;
+      double lat;
+      double long;
+      var profiles;
+      //
 
-  var url = DotEnv().env['ALLUSERSURL'].toString();
-  http.get(url).then((response) {
-    var jsonString = response.body.toString();
-    profiles = jsonDecode(jsonString);
-    print(profiles);
-    profiles.forEach((user) {
-      print(user);
-      queryParams(user['broadLocationID']).then((onValue) {
-userList.add(User(
-          locationID:user['uid'],
-          age: 21,
-          name: user['first_name'],
-          gender: "M/F",
-          lat: _lat,
-          lon: _lon,
-          interest1: "something",
-          interest2: "something else",
-          interest3: "something other"));
-          });
-          print(userList);
+      var url = DotEnv().env['ALLUSERSURL'].toString();
+      await http.get(url).then((response) {
+        var jsonString = response.body.toString();
+        profiles = jsonDecode(jsonString);
+        print(profiles);
+        profiles.forEach((user) {
+          print(user);
+          var loc = user['focusedLocationID'].split(',');
+          print(loc);
+          userList.add(User(
+              uid: user['uid'].toString(),
+              age: 21,
+              name: user['first_name'],
+              gender: "M/F",
+              lat: double.parse(loc[0]),
+              lon: double.parse(loc[1]),
+              interest1: "something",
+              interest2: "something else",
+              interest3: "something other"));
+        });
+        print(userList);
       });
 
-
-      
-    });
-    print(userList);
-
-  return userList;
-}
-
+      print(userList);
+      setState(() {
+        users = userList;
+      });
+    } else {}
+  }
 
   Future<LatLng> queryParams(String query) async {
-      //query = "1600 Amphiteatre Parkway, Mountain View";
-      var addresses = await Geocoder.local.findAddressesFromQuery(query);
-      var first = addresses.first;
+    //query = "1600 Amphiteatre Parkway, Mountain View";
+    var addresses = await Geocoder.local.findAddressesFromQuery(query);
+    var first = addresses.first;
 
-      print("${first.featureName} : ${first.coordinates}");
-      setState(() {
-        _lat = first.coordinates.latitude;
-        _lon = first.coordinates.longitude;
-        
-      });
-      return LatLng(_lat,_lon);
-    }
-
+    print("${first.featureName} : ${first.coordinates}");
+    setState(() {
+      _lat = first.coordinates.latitude;
+      _lon = first.coordinates.longitude;
+    });
+    return LatLng(_lat, _lon);
+  }
 
   double distCalc(double OUlat, double OUlon) {
 //Set User's location as UMiami
@@ -129,7 +128,30 @@ userList.add(User(
             (sin(rdlon / 2) * sin(rdlon / 2));
     double c = 2 * atan2(sqrt(a), sqrt(1 - a));
     double d = Rkm * c;
-    return d;
+    return d*1.609;
+  }
+
+  void _showDialog(String message) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Message"),
+          content: new Text(message),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> _getLocation() async {
@@ -171,6 +193,8 @@ userList.add(User(
 
   Widget build(BuildContext context) {
     var SBGreen = DotEnv().env['SBGREEN'].toString();
+    var friendshipURL = DotEnv().env['CREATEFRIENDURL'].toString();
+    getUsers();
 
     final topAppBar = AppBar(
       elevation: 0.1,
@@ -188,58 +212,62 @@ userList.add(User(
     );
 
     makeListTile(User user) {
-
       print(user.name);
-    return ListTile(
-          isThreeLine: true,
-          contentPadding:
-              EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-          leading: Container(
-            padding: EdgeInsets.only(right: 12.0),
-            decoration: new BoxDecoration(
-                border: new Border(
-                    right:
-                        new BorderSide(width: 1.0, color: Color(0xFF306856)))),
-            child: Icon(Icons.verified_user, color: Colors.black),
+      return ListTile(
+        isThreeLine: true,
+        contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+        leading: Container(
+          padding: EdgeInsets.only(right: 12.0),
+          decoration: new BoxDecoration(
+              border: new Border(
+                  right: new BorderSide(width: 1.0, color: Color(0xFF306856)))),
+          child: Icon(Icons.verified_user, color: Colors.black),
+        ),
+        title: Text(
+          user.name,
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        ),
+        subtitle: Column(
+          children: <Widget>[
+            Text(
+                user.age.toString() +
+                    ", " +
+                    user.gender +
+                    " | " +
+                    distCalc(user.lat, user.lon).toStringAsFixed(1) +
+                    " mi away.",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.black)),
+            Text(
+                user.interest1 +
+                    " | " +
+                    user.interest2 +
+                    " | " +
+                    user.interest3,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.black)),
+          ],
+        ),
+        trailing: Container(
+          padding: EdgeInsets.only(left: 12.0),
+          decoration: new BoxDecoration(
+              border: new Border(
+                  left: new BorderSide(width: 1.0, color: Color(0xFF306856)))),
+          child: IconButton(
+            icon: Icon(Icons.add, color: Colors.black),
+            onPressed: () {
+              http.post(friendshipURL, body: {
+                "sender": widget.uid,
+                "receiver": user.uid
+              }).then((result) {
+                print(result);
+                _showDialog("Added Friend");
+              });
+            },
           ),
-          title: Text(
-            user.name,
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-          ),
-          subtitle: Column(
-            children: <Widget>[
-              Text(
-                  user.age.toString() +
-                      ", " +
-                      user.gender +
-                      " | " +
-                      distCalc(user.lat, user.lon).toStringAsFixed(1) +
-                      " km away.",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black)),
-              Text(
-                  user.interest1 +
-                      " | " +
-                      user.interest2 +
-                      " | " +
-                      user.interest3,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black)),
-            ],
-          ),
-          trailing: Container(
-            padding: EdgeInsets.only(left: 12.0),
-            decoration: new BoxDecoration(
-                border: new Border(
-                    left:
-                        new BorderSide(width: 1.0, color: Color(0xFF306856)))),
-            child: IconButton(
-              icon: Icon(Icons.add, color: Colors.black),
-              onPressed: () {},
-            ),
-          ),
-        );
+        ),
+      );
     }
 
     makeCard(User user) => Card(
@@ -255,80 +283,91 @@ userList.add(User(
       child: ListView.builder(
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
-        itemCount: 5,
+        itemCount: 6,
         itemBuilder: (BuildContext context, int index) {
-          return makeCard(users[index]);
+          print(users);
+          if (!users.isEmpty) {
+            getUsers();
+            return makeCard(users[index]);
+          } else {
+            return Text("Loading");
+          }
         },
       ),
     );
 
-    return Scaffold(
-      backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
-      appBar: topAppBar,
-      body: makeBody,
-    );
+    if (users == null || users.isEmpty) {
+      return Scaffold(
+        appBar: topAppBar,
+        backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
+        body: Center(
+          child: Text("Loading"),
+        ),
+      );
+    } else {
+      return Scaffold(
+        backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
+        appBar: topAppBar,
+        body: makeBody,
+      );
+    }
   }
 }
 
-
-
-
-
-
 //List regularData = [
-  //   User(
-  //     name: "Alpha",
-  //     age: 18,
-  //     gender: 'M',
-  //     interest1: "Sports",
-  //     interest2: "Music",
-  //     interest3: "Partying",
-  //     //Coral Gables
-  //     lat: 25.710290,
-  //     lon: -80.268650,
-  //   ),
-  //   User(
-  //     name: "Beta",
-  //     age: 19,
-  //     gender: 'M',
-  //     interest1: "Sports",
-  //     interest2: "Reading",
-  //     interest3: "Poetry",
-  //     //University of Miami
-  //     lat: 25.719168,
-  //     lon: -80.277122,
-  //   ),
-  //   User(
-  //     name: "Gamma",
-  //     age: 18,
-  //     gender: 'M',
-  //     interest1: "Sports",
-  //     interest2: "Gaming",
-  //     interest3: "E-Sports",
-  //     //Sunset
-  //     lat: 25.705206,
-  //     lon: -80.286871,
-  //   ),
-  //   User(
-  //     name: "Delta",
-  //     age: 19,
-  //     gender: 'M',
-  //     interest1: "Gaming",
-  //     interest2: "Music",
-  //     interest3: "Partying",
-  //     //Rivera Country Club
-  //     lat: 25.728961,
-  //     lon: -80.275665,
-  //   ),
-  //   User(
-  //     name: "Epsilon",
-  //     age: 20,
-  //     gender: 'M',
-  //     interest1: "Food",
-  //     interest2: "Music",
-  //     interest3: "Reading",
-  //     //Coral Gables
-  //     lat: 25.710290,
-  //     lon: -80.268650,
-  //   ),
-  // ];
+//   User(
+//     name: "Alpha",
+//     age: 18,
+//     gender: 'M',
+//     interest1: "Sports",
+//     interest2: "Music",
+//     interest3: "Partying",
+//     //Coral Gables
+//     lat: 25.710290,
+//     lon: -80.268650,
+//   ),
+//   User(
+//     name: "Beta",
+//     age: 19,
+//     gender: 'M',
+//     interest1: "Sports",
+//     interest2: "Reading",
+//     interest3: "Poetry",
+//     //University of Miami
+//     lat: 25.719168,
+//     lon: -80.277122,
+//   ),
+//   User(
+//     name: "Gamma",
+//     age: 18,
+//     gender: 'M',
+//     interest1: "Sports",
+//     interest2: "Gaming",
+//     interest3: "E-Sports",
+//     //Sunset
+//     lat: 25.705206,
+//     lon: -80.286871,
+//   ),
+//   User(
+//     name: "Delta",
+//     age: 19,
+//     gender: 'M',
+//     interest1: "Gaming",
+//     interest2: "Music",
+//     interest3: "Partying",
+//     //Rivera Country Club
+//     lat: 25.728961,
+//     lon: -80.275665,
+//   ),
+//   User(
+//     name: "Epsilon",
+//     age: 20,
+//     gender: 'M',
+//     interest1: "Food",
+//     interest2: "Music",
+//     interest3: "Reading",
+//     //Coral Gables
+//     lat: 25.710290,
+//     lon: -80.268650,
+//   ),
+// ];

@@ -102,25 +102,23 @@ class _HomePageState extends State<HomePage> {
                       context,
                       MaterialPageRoute(
                           builder: (BuildContext context) =>
-                              ListPage(title: "Nearby")));
+                              ListPage(title: "Nearby", uid: widget.uid)));
                 },
               ),
               ListTile(
-                  title: Text(
-                    "Create Event",
-                    style: Theme.of(context).textTheme.body1,
-                  ),
-                  trailing: Icon(Icons.add_location),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                CreateEvent(uid:widget.uid)
-                        )
-                    );
-                  },
-                  ),
+                title: Text(
+                  "Create Event",
+                  style: Theme.of(context).textTheme.body1,
+                ),
+                trailing: Icon(Icons.add_location),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              CreateEvent(uid: widget.uid)));
+                },
+              ),
             ],
           ),
         ), //this will just add the Navigation Drawer Icon

@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:random_string/random_string.dart' as random;
 import 'dart:convert';
 import './homepage.dart';
+import './addInterest.dart';
 
 class EditProfilePage extends StatefulWidget {
   EditProfilePage({Key key, this.title, this.uid, this.name, this.uBio}) : super(key: key);
@@ -106,10 +107,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   maxLines: 10,
                 ),
                 SizedBox(height: 16.0),
-                Text(
-                  "Interests",
-                  style: Theme.of(context).textTheme.title,
-                ),
+                InterestList(widget.uid, 5, true),
                 SizedBox(height: 16.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,

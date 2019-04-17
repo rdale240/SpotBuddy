@@ -4,6 +4,7 @@ import 'package:random_string/random_string.dart' as random;
 import 'dart:convert';
 import './homepage.dart';
 import './editProfile.dart';
+import './showInterests.dart';
 
 class ProfilePage extends StatefulWidget {
   ProfilePage({Key key, this.title, this.uid}) : super(key: key);
@@ -115,10 +116,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 SizedBox(height: 16.0),
                 Text(bio, style: Theme.of(context).textTheme.body1),
                 SizedBox(height: 16.0),
-                Text(
-                  "Interests",
-                  style: Theme.of(context).textTheme.title,
-                ),
+                InterestView(widget.uid, 5, true),
                 SizedBox(height: 16.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,

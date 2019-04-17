@@ -10,6 +10,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import './eventPage.dart';
 import './eventItem.dart';
 import 'dart:convert';
+import './addInterest.dart';
 
 class CreateEvent extends StatefulWidget {
   CreateEvent({Key: Key, this.uid});
@@ -202,7 +203,21 @@ class _CreateEventState extends State<CreateEvent> {
                       });
                     },
                   ),
+                  MaterialButton(
+                    child: Text(
+                      "Select Date",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onPressed: () {
+                      showDatePicker(context: context,firstDate: DateTime(2018), initialDate: DateTime.now(),lastDate: DateTime(2020)).then((onValue){
+                        dat.text = onValue.toString().substring(5,10);
+                        dat.text=dat.text.replaceAll("-", "/");
+                      });
+                    },
+                    color: Color(0xFF306856),
+                  ),
                   SizedBox(height: 50.0),
+                  Text("Address: " + address.toString()),
                   MaterialButton(
                     child: Text(
                       "Select Location",
@@ -214,7 +229,6 @@ class _CreateEventState extends State<CreateEvent> {
                     color: Color(0xFF306856),
                   ),
                   SizedBox(height: 50.0),
-                  Text("Address: " + address.toString()),
                   Container(
                     child: GoogleMap(
                         mapType: MapType.normal,
@@ -264,6 +278,19 @@ class _CreateEventState extends State<CreateEvent> {
                       setState(() {});
                     },
                   ),
+                  MaterialButton(
+                    child: Text(
+                      "Select Start Time",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onPressed: () {
+                      showTimePicker(context: context,initialTime: TimeOfDay.now()).then((onValue){
+                        tStart.text = onValue.toString().substring(10,15);
+                        tStart.text =tStart.text.replaceAll(":", "");
+                      });
+                    },
+                    color: Color(0xFF306856),
+                  ),
                   SizedBox(height: 50.0),
                   TextField(
                     controller: tEnd,
@@ -275,6 +302,20 @@ class _CreateEventState extends State<CreateEvent> {
                       setState(() {});
                     },
                   ),
+                  MaterialButton(
+                    child: Text(
+                      "Select End Time",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onPressed: () {
+                      showTimePicker(context: context,initialTime: TimeOfDay.now()).then((onValue){
+                        tEnd.text = onValue.toString().substring(10,15);
+                        tEnd.text =tEnd.text.replaceAll(":", "");
+                      });
+                    },
+                    color: Color(0xFF306856),
+                  ),
+                   InterestList(widget.uid, 4,true),
                   SizedBox(height: 50),
                   MaterialButton(
                     color: Color(0xFF306856),
@@ -291,6 +332,7 @@ class _CreateEventState extends State<CreateEvent> {
                       _createEvent();
                     },
                   ),
+                 
                 ],
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
