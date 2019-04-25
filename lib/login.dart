@@ -47,6 +47,7 @@ class _LoginPageState extends State<LoginPage> {
       },
     );
   }
+
   void _login() {
     var url = DotEnv().env['SIGNINURL'].toString();
     print(url);
@@ -61,23 +62,25 @@ class _LoginPageState extends State<LoginPage> {
       http
           .get(url + '?email=' + email.text + '&pass=' + pass.text)
           .then((getResponse) {
-        print("Log In - " +"Response status: ${getResponse.statusCode}");
-        print("Log In - " +"Response body: ${getResponse.body}");
+        print("Log In - " + "Response status: ${getResponse.statusCode}");
+        print("Log In - " + "Response body: ${getResponse.body}");
         var jsonString = '''
           [ ${getResponse.body} ]''';
         var acct = jsonDecode(jsonString);
         print(acct[0]['uid']);
-            if (getResponse.statusCode == 200) {
-              print("Log In - " +acct[0].toString());
-              var acctUID = acct[0]["uid"];
-              if (acct[0]["accessToken"] != null) {
-                print("Log In - " +"Signing in with " + acctUID);
-                Navigator.popUntil(context, ModalRoute.withName('/'));
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => HomePage(title: "SpotBuddy", uid:acctUID)));
-            
-              }
+        if (getResponse.statusCode == 200) {
+          print("Log In - " + acct[0].toString());
+          var acctUID = acct[0]["uid"];
+          if (acct[0]["accessToken"] != null) {
+            print("Log In - " + "Signing in with " + acctUID);
+            Navigator.popUntil(context, ModalRoute.withName('/'));
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        HomePage(title: "SpotBuddy", uid: acctUID)));
           }
-        else {
+        } else {
           _showDialog("Email or Password is Incorrect");
         }
       });
@@ -93,13 +96,25 @@ class _LoginPageState extends State<LoginPage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title, style: TextStyle(color: Colors.white)),
-        backgroundColor: Color(0xFF306856),
-      ),
-      body: SafeArea(
+      body: Container(
+        //color: Color(0xBB2C5424),
+        color: Color(0xFF306856),
+        // decoration: BoxDecoration(
+        //     gradient: LinearGradient(
+        //         begin: Alignment.topLeft,
+        //         end: Alignment.bottomRight,
+        //         stops: [
+        //       0.1,
+        //       0.3,
+        //       0.7,
+        //       0.9
+        //     ],
+        //         colors: [
+        //       Colors.lightGreen[800],
+        //       Colors.lightGreen[600],
+        //       Colors.lightGreen[400],
+        //       Colors.lightGreen[500],
+        //     ])),
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         child: ListView(
@@ -120,12 +135,18 @@ class _LoginPageState extends State<LoginPage> {
           padding: EdgeInsets.symmetric(horizontal: 24.0),
           children: <Widget>[
             SizedBox(height: 80.0),
+            Center(
+                child: Text(
+              "Login",
+              style: Theme.of(context).textTheme.display2,
+            )),
             SizedBox(height: 80.0), // Space for Logo
             TextField(
               controller: email,
               decoration: InputDecoration(
-                labelText: "Username",
+                labelText: "Email Address",
                 filled: true,
+                fillColor: Color(0xFFFFFFFF),
               ),
             ),
             SizedBox(height: 80.0),
@@ -134,19 +155,48 @@ class _LoginPageState extends State<LoginPage> {
               decoration: InputDecoration(
                 labelText: "Password",
                 filled: true,
+                fillColor: Color(0xFFFFFFFF),
               ),
               obscureText: true,
             ),
-            ButtonBar(
-              children: <Widget>[
-                RaisedButton(
-                  child: Text("Next"),
+            SizedBox(
+              height: 170,
+            ),
+            Padding(
+                padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
+                child: RaisedButton(
+                  //color: Color(0xff2F8C3E),
+                  color: Color(0xFF306856),
+                  child: Text(
+                    "Login",
+                    style: Theme.of(context).textTheme.display3,
+                  ),
+                  shape: RoundedRectangleBorder(
+                      side: BorderSide(color: Color(0xFFFFFFFF)),
+                      borderRadius: new BorderRadius.circular(120.0)),
                   onPressed: () {
                     _login();
                   },
-                )
-              ],
+                )),
+            SizedBox(
+              height: 60,
             ),
+            Padding(
+                padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
+                child: RaisedButton(
+                  color: Color(0xFF306856),
+                  //color: Colors.lightGreen,
+                  child: Text(
+                    "Back",
+                    style: Theme.of(context).textTheme.display3,
+                  ),
+                  shape: RoundedRectangleBorder(
+                      side: BorderSide(color: Color(0xFFFFFFFF)),
+                      borderRadius: new BorderRadius.circular(120.0)),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )),
           ],
         ),
       ),

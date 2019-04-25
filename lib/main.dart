@@ -8,12 +8,11 @@ import './selfProfile.dart';
 import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-
 Future main() async {
-  
   runApp(MyApp());
   await DotEnv().load('.env');
 }
+
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -33,9 +32,9 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.lightGreen,
           textTheme: TextTheme(
             body1: new TextStyle(color: Colors.black),
-            display1: new TextStyle(color: Colors.black,fontSize: 32),
-            display2: new TextStyle(color: Colors.white),
-            display3: new TextStyle(color: Colors.white),
+            display1: new TextStyle(color: Colors.black, fontSize: 32),
+            display2: new TextStyle(color: Colors.white, fontSize: 32),
+            display3: new TextStyle(color: Colors.white, fontSize: 32),
             display4: new TextStyle(color: Colors.white),
             body2: new TextStyle(color: Colors.white),
             headline: new TextStyle(color: Colors.white),
@@ -74,20 +73,20 @@ class Landing extends StatefulWidget {
 
 class _LandingState extends State<Landing> {
   void _Log() {
-    print("Landing - " +'Login Press');
+    print("Landing - " + 'Login Press');
   }
 
   void _Create() {
     print("Landing - " + 'Create Press');
   }
 
-  Future pageLog() async {
-    var file = new File('Logs/Log.txt');
-    var contents = file.openWrite();
-    contents.write("SpotBuddy App Launched");
-    contents.flush();
-    contents.close();
-  }
+  // Future pageLog() async {
+  //   var file = new File('Logs/Log.txt');
+  //   var contents = file.openWrite();
+  //   contents.write("SpotBuddy App Launched");
+  //   contents.flush();
+  //   contents.close();
+  // }
 
   @override
   void initState() {
@@ -97,7 +96,7 @@ class _LandingState extends State<Landing> {
 
   @override
   Widget build(BuildContext context) {
-    pageLog();
+    //pageLog();
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -105,79 +104,134 @@ class _LandingState extends State<Landing> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: ListView(
-          // Column is also layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          padding: EdgeInsets.symmetric(horizontal: 24.0),
-          children: <Widget>[
-            SizedBox(height: 120.0),
-            Container(
-                child: new Text('SpotBuddy',
-                    style: Theme.of(context).textTheme.title),
-                alignment: Alignment(0.0, 0.0)),
-            Image.asset(
-              widget.logoAsset,
-              height: 360.0,
-            ), // Space for Logo
-            SizedBox(height: 0),
-            MaterialButton(
-              child: Text(
-                "Login",
-                style: TextStyle(color: Color(0xFFFFFFFF)),
-              ),
-              color: widget.logoColor,
-              minWidth: 200,
-              height: 80,
-              shape: new RoundedRectangleBorder(
-                  borderRadius: new BorderRadius.circular(100.0)),
-              onPressed: () {
-                _Log();
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            LoginPage(title: "SpotBuddy Login")));
-              },
+      body: Container(
+          // Center is a layout widget. It takes a single child and positions it
+          // in the middle of the parent.
+
+          height: MediaQuery.of(context).size.height,
+          decoration: new BoxDecoration(
+            image: new DecorationImage(
+              image: new AssetImage('assets/spotbuddy-bg.jpg'),
+              fit: BoxFit.fitHeight,
             ),
-            SizedBox(height: 40.0),
-            MaterialButton(
-              child: Text(
-                "Sign Up",
-                style: TextStyle(color: Color(0xFFFFFFFF)),
+          ),
+          child: ListView(
+            children: <Widget>[
+              SizedBox(
+                height: MediaQuery.of(context).size.height * .7,
               ),
-              color: widget.logoColor,
-              minWidth: 200,
-              height: 80,
-              clipBehavior: Clip.antiAlias,
-              shape: new RoundedRectangleBorder(
-                  borderRadius: new BorderRadius.circular(100.0)),
-              onPressed: () {
-                _Create();
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            SignUpPage(title: "SpotBuddy Sign Up")));
-              },
-            ),
-          ],
-        ),
-      ),
+              SizedBox(
+                width: 200,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(64, 0, 64, 0),
+                  child: new RaisedButton(
+                    color: Color(0xff2F8C3E),
+                    elevation: 1,
+                    child: new Text("Login", style: Theme.of(context).textTheme.display3,),
+                    shape: new RoundedRectangleBorder(
+                      side: BorderSide(color: Color(0xFFFFFFFF)),
+                      borderRadius: new BorderRadius.circular(60.0),
+                    ),
+                    onPressed: () {
+                      _Log();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  LoginPage(title: "SpotBuddy Login")));
+                    },
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 50,
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(64, 0, 64, 0),
+                child: RaisedButton(
+                  color: Color(0xff2F8C3E),
+                  child: Text("Sign Up",style: Theme.of(context).textTheme.display3,),
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(color: Color(0xFFFFFFFF)),
+                      borderRadius: new BorderRadius.circular(120.0)),
+                  onPressed: () {
+                    _Log();
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                SignUpPage(title: "SpotBuddy Sign Up")));
+                  },
+                ),
+              )
+            ],
+          )),
     );
   }
 }
+
+// ListView(
+//           // Column is also layout widget. It takes a list of children and
+//           // arranges them vertically. By default, it sizes itself to fit its
+//           // children horizontally, and tries to be as tall as its parent.
+//           //
+//           // Invoke "debug painting" (press "p" in the console, choose the
+//           // "Toggle Debug Paint" action from the Flutter Inspector in Android
+//           // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
+//           // to see the wireframe for each widget.
+//           //
+//           // Column has various properties to control how it sizes itself and
+//           // how it positions its children. Here we use mainAxisAlignment to
+//           // center the children vertically; the main axis here is the vertical
+//           // axis because Columns are vertical (the cross axis would be
+//           // horizontal).
+//           padding: EdgeInsets.symmetric(horizontal: 24.0),
+//           children: <Widget>[
+//             SizedBox(height: 120.0),
+//             Container(
+//                 child: new Text('SpotBuddy',
+//                     style: Theme.of(context).textTheme.title),
+//                 alignment: Alignment(0.0, 0.0)),
+//             SizedBox(height: 0),
+//             MaterialButton(
+//               child: Text(
+//                 "Login",
+//                 style: TextStyle(color: Color(0xFFFFFFFF)),
+//               ),
+//               color: widget.logoColor,
+//               minWidth: 200,
+//               height: 80,
+//               shape: new RoundedRectangleBorder(
+//                   borderRadius: new BorderRadius.circular(100.0)),
+//               onPressed: () {
+//                 _Log();
+//                 Navigator.push(
+//                     context,
+//                     MaterialPageRoute(
+//                         builder: (context) =>
+//                             LoginPage(title: "SpotBuddy Login")));
+//               },
+//             ),
+//             SizedBox(height: 40.0),
+//             MaterialButton(
+//               child: Text(
+//                 "Sign Up",
+//                 style: TextStyle(color: Color(0xFFFFFFFF)),
+//               ),
+//               color: widget.logoColor,
+//               minWidth: 200,
+//               height: 80,
+//               clipBehavior: Clip.antiAlias,
+//               shape: new RoundedRectangleBorder(
+//                   borderRadius: new BorderRadius.circular(100.0)),
+//               onPressed: () {
+//                 _Create();
+//                 Navigator.push(
+//                     context,
+//                     MaterialPageRoute(
+//                         builder: (context) =>
+//                             SignUpPage(title: "SpotBuddy Sign Up")));
+//               },
+//             ),
+//           ],
+//         ),

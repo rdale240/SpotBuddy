@@ -58,6 +58,7 @@ flutter:
     ./assets/restaurant.jpg,
     ./assets/club.jpg,
     ./assets/f-bar.jpg,
+    ./assets/spotbuddy-bg.jpg,
     .env]
     
   #  - images/a_dot_burr.jpeg
