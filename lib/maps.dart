@@ -10,6 +10,7 @@ import 'package:random_string/random_string.dart' as random;
 import './eventPage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:convert';
+import 'package:permission/permission.dart';
 
 class MapSample extends StatefulWidget {
   final String uid;
@@ -22,6 +23,7 @@ class MapSample extends StatefulWidget {
 
 class MapSampleState extends State<MapSample> {
   Completer<GoogleMapController> _controller = Completer();
+  bool permission = true;
   double _userLat;
   double _userLong;
   Set<Marker> _markers = new Set();
@@ -75,12 +77,33 @@ class MapSampleState extends State<MapSample> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    getPermissionStatus().then((results) {
+      results.forEach((result) {
+        print(result.permissionName);
+        print(result.permissionStatus);
+        if (result.permissionStatus == PermissionStatus.deny) {
+          print("Permission Denied");
+          Permission.requestPermissions([PermissionName.Location]).then( (p) {
+            print(p.toString());
+          });
+        }
+        else {
+          setState(() {
+           permission = false; 
+          });
+        }
+      });
+    });
     _getLocation();
   }
 
+  Future<List<Permissions>> getPermissionStatus() async {
+    List<Permissions> permissions =
+        await Permission.getPermissionsStatus([PermissionName.Location]);
+    return permissions;
+  }
+
   Future<void> _onAddMarkerButtonPressed() async {
-
-
     http.get(eventURL).then((response) {
       print(response);
       var jsonString = '''
@@ -88,9 +111,9 @@ class MapSampleState extends State<MapSample> {
       var jsonevents = jsonDecode(jsonString);
       var listings = jsonevents[0];
       print(events);
-          setState(() {
-      _markers.clear();
-    });
+      setState(() {
+        _markers.clear();
+      });
       listings.forEach((event) {
         print(event);
         var locationInfo =
@@ -118,14 +141,10 @@ class MapSampleState extends State<MapSample> {
                 }),
             icon: BitmapDescriptor.defaultMarker,
           ));
-          setState(() {
-          
+          setState(() {});
         });
-        });
-        
       });
     });
-   
   }
 
   Future<void> _getLocation() async {
@@ -176,23 +195,29 @@ class MapSampleState extends State<MapSample> {
   Widget build(BuildContext context) {
     CameraPosition userPos = CameraPosition(
         bearing: 0, target: LatLng(_userLat, _userLong), tilt: 0, zoom: 17.5);
-
-    return new Scaffold(
-      body: GoogleMap(
-        mapType: MapType.normal,
-        markers: _markers,
-        initialCameraPosition: userPos,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
-        myLocationEnabled: true,
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _goToTheLake,
-        label: Text('Refresh'),
-        icon: Icon(Icons.refresh),
-      ),
-    );
+    if (permission) {
+      return Container(
+        decoration: BoxDecoration(color: Colors.white),
+        child: Center(child: Text("Welcome")),
+      );
+    } else {
+      return new Scaffold(
+        body: GoogleMap(
+          mapType: MapType.normal,
+          markers: _markers,
+          initialCameraPosition: userPos,
+          onMapCreated: (GoogleMapController controller) {
+            _controller.complete(controller);
+          },
+          myLocationEnabled: false,
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: _goToTheLake,
+          label: Text('Refresh'),
+          icon: Icon(Icons.refresh),
+        ),
+      );
+    }
   }
 
   Future<void> _goToTheLake() async {

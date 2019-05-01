@@ -124,7 +124,7 @@ class _InterestViewState extends State<InterestView> {
     makeCard(String interest) => Padding(child:Text(interest), padding:EdgeInsets.fromLTRB(0, 8, 0, 8), );
 
     return Container(
-      height: 150,
+      height: 50,
       child: ListView(
         children: <Widget>[
           Row(
@@ -132,28 +132,12 @@ class _InterestViewState extends State<InterestView> {
             children: <Widget>[
               Text(
                 "Interests",
-                style: Theme.of(context).textTheme.display1,
+                style: Theme.of(context).textTheme.title,
               ),
             ],
           ),
-          Column(
-            children: <Widget>[
-              ListView.builder(
-        scrollDirection: Axis.vertical,
-        shrinkWrap: true,
-        itemCount: interests.length ?? 0,
-        itemBuilder: (BuildContext context, int index) {
-          if (interests.isNotEmpty) {
-            return makeCard(interests[index]);
-          } else {
-            return Text("Loading");
-          }
-        },
-      ),
 
             ],
-          )
-        ],
       ),
     );
   }

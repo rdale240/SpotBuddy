@@ -27,11 +27,28 @@ class _EventPageState extends State<EventPage> {
   String _dateString = "";
   String _description = "";
   String _address = "";
+  List<String> interestList = [];
 
   void initState() {
     super.initState();
     _getEvent();
     setState(() {});
+  }
+
+  _getEventInterests() {
+    http
+        .get('http://3.18.95.167/getEventInterests' +
+            '?eventID=' +
+            widget.eventID)
+        .then((response) {
+      var jsonString = '''
+          ${response.body}''';
+      var interests = jsonDecode(jsonString);
+      interests.forEach((f) {
+        print(f.toString());
+        interestList.add(f['interest']);
+      });
+    });
   }
 
   _getEvent() {
@@ -48,6 +65,7 @@ class _EventPageState extends State<EventPage> {
       if (getResponse.statusCode == 200) {
         setState(() {
           _getProfile(event);
+          _getEventInterests();
           print("Log In - " + event[0].toString());
           _title = event[0]['title'];
           _timeString = event[0]['timeStart'].toString() +
@@ -55,7 +73,7 @@ class _EventPageState extends State<EventPage> {
               event[0]['timeEnd'].toString();
           _description = event[0]['description'];
           _address = event[0]['address'];
-          _dateString=event[0]['date'];
+          _dateString = event[0]['date'];
         });
       } else {
         Navigator.pop(context);
@@ -131,9 +149,29 @@ class _EventPageState extends State<EventPage> {
   @override
   Widget build(BuildContext context) {
     double _tempRating = 4.8;
-    setState(() {
-      
-    });
+    var interestListings = () {
+      if (interestList.length != 0) {
+        return <Widget>[
+          Text(interestList[0] + "     ",
+              style: Theme.of(context).textTheme.body1),
+          Text(interestList[1] + "     ",
+              style: Theme.of(context).textTheme.body1),
+          Text(interestList[2] + "     ",
+              style: Theme.of(context).textTheme.body1),
+        ];
+      } else {
+        return <Widget>[
+          Text("Loading..." + "     ",
+              style: Theme.of(context).textTheme.body1),
+          Text("" + "      ",
+              style: Theme.of(context).textTheme.body1),
+          Text("" + "     ",
+              style: Theme.of(context).textTheme.body1),
+        ];
+      }
+    };
+
+    setState(() {});
     return Scaffold(
         appBar: AppBar(
           // Here we take the value from the MyHomePage object that was created by
@@ -248,17 +286,10 @@ class _EventPageState extends State<EventPage> {
                     SizedBox(height: 16.0),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Text(random.randomAlpha(8) + "     ",
-                            style: Theme.of(context).textTheme.body1),
-                        Text(random.randomAlpha(8) + "      ",
-                            style: Theme.of(context).textTheme.body1),
-                        Text(random.randomAlpha(8) + "     ",
-                            style: Theme.of(context).textTheme.body1),
-                      ],
-                    )
-                  ],
-                )),
+                      children: interestListings(),
+                    )],
+                ),
+              ),
             SizedBox(height: 10),
             MaterialButton(
               child: Text(

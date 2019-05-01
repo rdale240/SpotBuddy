@@ -126,8 +126,11 @@ class _SignUpPageState extends State<SignUpPage> {
               if (acct[0]["accessToken"] != null) {
                 print("Sign Up - " + "Signing in with " + acctUID);
                 Navigator.popUntil(context, ModalRoute.withName('/'));
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => HomePage(title: "SpotBuddy", uid:acctUID)));
-            
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            HomePage(title: "SpotBuddy", uid: acctUID)));
               }
             } else {
               _showDialog("Error Creating Profile");
@@ -146,78 +149,92 @@ class _SignUpPageState extends State<SignUpPage> {
         backgroundColor: Color(0xFF306856),
       ),
       body: Center(
+        child: Container(
+          color: Color(0xFF306856),
           child: ListView(
-        padding: EdgeInsets.symmetric(horizontal: 24.0),
-        children: <Widget>[
-          //  RichText(
-          //   text: TextSpan(text: 'First Name',
-          //   style:TextStyle(color: Colors.black),
-          //   children: [
-          //     TextSpan(
-          //         text: ' *',
-          //         style: TextStyle(
-          //           color: Colors.red,
-          //         ))
-          //   ]),
-          // ),
-          SizedBox(height: 50.0),
-          TextField(
-            controller: fname,
-            decoration: InputDecoration(
-              labelText: "First Name",
-              hasFloatingPlaceholder: true,
-              filled: true,
-            ),
-          ),
-          SizedBox(height: 50.0),
-          TextField(
-            controller: email,
-            decoration: InputDecoration(
-              hasFloatingPlaceholder: true,
-              labelText: "Email",
-              filled: true,
-            ),
-          ),
-          SizedBox(height: 50.0),
-          TextField(
-            controller: pass,
-            decoration: InputDecoration(
-              labelText: "Password",
-              filled: true,
-            ),
-            obscureText: true,
-          ),
-          SizedBox(height: 50.0),
-          TextField(
-            controller: bday,
-            decoration: InputDecoration(
-              labelText: "Birthday",
-              filled: true,
-            ),
-          ),
-          SizedBox(height: 50.0),
-          TextField(
-            controller: dln,
-            decoration: InputDecoration(
-              labelText: "Drivers License Number",
-              filled: true,
-            ),
-            obscureText: true,
-          ),
-          SizedBox(height: 50.0),
-          MaterialButton(
-            child: Text("Create Account"),
-            color: Color(0xFF306856),
-            minWidth: 200,
-            height: 80,
-            shape: new RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(100.0)),
-            onPressed: () {
-              _submitInfo();
-            },
-          ),
-        ],
-      )),
+              padding: EdgeInsets.symmetric(horizontal: 24.0),
+              children: <Widget>[
+                //  RichText(
+                //   text: TextSpan(text: 'First Name',
+                //   style:TextStyle(color: Colors.black),
+                //   children: [
+                //     TextSpan(
+                //         text: ' *',
+                //         style: TextStyle(
+                //           color: Colors.red,
+                //         ))
+                //   ]),
+                // ),
+                SizedBox(height: 50.0),
+                TextField(
+                  controller: fname,
+                  decoration: InputDecoration(
+                    labelText: "First Name",
+                    hasFloatingPlaceholder: true,
+                    filled: true,
+                    fillColor: Color(0xFFFFFFFF),
+                  ),
+                ),
+                SizedBox(height: 50.0),
+                TextField(
+                  controller: email,
+                  decoration: InputDecoration(
+                    hasFloatingPlaceholder: true,
+                    labelText: "Email",
+                    filled: true,
+                    fillColor: Color(0xFFFFFFFF),
+                  ),
+                ),
+                SizedBox(height: 50.0),
+                TextField(
+                  controller: pass,
+                  decoration: InputDecoration(
+                    labelText: "Password",
+                    filled: true,
+                    fillColor: Color(0xFFFFFFFF),
+                  ),
+                  obscureText: true,
+                ),
+                SizedBox(height: 50.0),
+                TextField(
+                  controller: bday,
+                  decoration: InputDecoration(
+                    labelText: "Birthday",
+                    filled: true,
+                    fillColor: Color(0xFFFFFFFF),
+                  ),
+                ),
+                SizedBox(height: 50.0),
+                TextField(
+                  controller: dln,
+                  decoration: InputDecoration(
+                    labelText: "Drivers License Number",
+                    filled: true,
+                    fillColor: Color(0xFFFFFFFF),
+                  ),
+                  obscureText: true,
+                ),
+                SizedBox(height: 50.0),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
+                  child: RaisedButton(
+                    color: Color(0xFF306856),
+                    //color: Colors.lightGreen,
+                    child: Text(
+                      "Sign Up",
+                      style: Theme.of(context).textTheme.display3,
+                    ),
+                    shape: RoundedRectangleBorder(
+                        side: BorderSide(color: Color(0xFFFFFFFF)),
+                        borderRadius: new BorderRadius.circular(120.0)),
+                    onPressed: () {
+                      _submitInfo();
+                    },
+                  ),
+                ),
+              ]),
+        ),
+      ),
     );
   }
 }

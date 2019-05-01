@@ -5,7 +5,7 @@ import 'package:vector_math/vector_math.dart' hide Colors;
 import './homepage.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geo_location_finder/geo_location_finder.dart';
+// import 'package:geo_location_finder/geo_location_finder.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -50,13 +50,27 @@ class _ListPageState extends State<ListPage> {
   double _CUlon = -80.277122;
   double _lat;
   double _lon;
+  List interestList = [];
 
   @override
   void initState() {
-    _getLocation();
-    getUsers();
+    //_getLocation();
     print(users);
     super.initState();
+  }
+_getInterests(String uid) async {
+
+
+    http.get("http://3.18.95.167/getProfileInterests?uid="+uid).then((response) {
+      var jsonString = response.body.toString();
+        var interests = jsonDecode(jsonString);
+        print(interests);
+        interests.forEach( (f) {
+          interestList.add(f['interest']);
+          print(interestList);
+        });
+        
+    });
   }
 
   Future<List> getUsers() async {
@@ -67,16 +81,19 @@ class _ListPageState extends State<ListPage> {
       double long;
       var profiles;
       //
-
+           interestList.clear(); 
       var url = DotEnv().env['ALLUSERSURL'].toString();
       await http.get(url).then((response) {
         var jsonString = response.body.toString();
         profiles = jsonDecode(jsonString);
         print(profiles);
         profiles.forEach((user) {
+          _getInterests(user['uid'].toString());
           print(user);
           var loc = user['focusedLocationID'].split(',');
           print(loc);
+          
+          
           userList.add(User(
               uid: user['uid'].toString(),
               age: 21,
@@ -84,9 +101,9 @@ class _ListPageState extends State<ListPage> {
               gender: "M/F",
               lat: double.parse(loc[0]),
               lon: double.parse(loc[1]),
-              interest1: "something",
-              interest2: "something else",
-              interest3: "something other"));
+              interest1: "Interest 1",
+              interest2: "Interest 2",
+              interest3: "Interest 3"));
         });
         print(userList);
       });
@@ -128,7 +145,7 @@ class _ListPageState extends State<ListPage> {
             (sin(rdlon / 2) * sin(rdlon / 2));
     double c = 2 * atan2(sqrt(a), sqrt(1 - a));
     double d = Rkm * c;
-    return d*1.609;
+    return d * 1.609;
   }
 
   void _showDialog(String message) {
@@ -154,42 +171,42 @@ class _ListPageState extends State<ListPage> {
     );
   }
 
-  Future<void> _getLocation() async {
-    Map<dynamic, dynamic> locationMap;
+  // Future<void> _getLocation() async {
+  //   Map<dynamic, dynamic> locationMap;
 
-    String result;
+  //   String result;
 
-    var _lat;
-    var _lng;
+  //   var _lat;
+  //   var _lng;
 
-    try {
-      locationMap = await GeoLocation.getLocation;
-      var status = locationMap["status"];
-      if ((status is String && status == "true") ||
-          (status is bool) && status) {
-        _lat = locationMap["latitude"];
-        _lng = locationMap["longitude"];
+  //   try {
+  //     locationMap = await GeoLocation.getLocation;
+  //     var status = locationMap["status"];
+  //     if ((status is String && status == "true") ||
+  //         (status is bool) && status) {
+  //       _lat = locationMap["latitude"];
+  //       _lng = locationMap["longitude"];
 
-        if (_lat is String) {
-          result = "Location: ($_lat, $_lng)";
-          _CUlat = double.parse(_lat);
-          _CUlon = double.parse(_lng);
-          print(result);
-        } else {
-          // lat and lng are not string, you need to check the data type and use accordingly.
-          // it might possible that else will be called in Android as we are getting double from it.
-          result = "Location: ($_lat, $_lng)";
-          print(result);
-        }
-      } else {
-        result = locationMap["message"];
-        print(result);
-      }
-    } on PlatformException {
-      result = 'Failed to get location';
-      print(result);
-    }
-  }
+  //       if (_lat is String) {
+  //         result = "Location: ($_lat, $_lng)";
+  //         _CUlat = double.parse(_lat);
+  //         _CUlon = double.parse(_lng);
+  //         print(result);
+  //       } else {
+  //         // lat and lng are not string, you need to check the data type and use accordingly.
+  //         // it might possible that else will be called in Android as we are getting double from it.
+  //         result = "Location: ($_lat, $_lng)";
+  //         print(result);
+  //       }
+  //     } else {
+  //       result = locationMap["message"];
+  //       print(result);
+  //     }
+  //   } on PlatformException {
+  //     result = 'Failed to get location';
+  //     print(result);
+  //   }
+  // }
 
   Widget build(BuildContext context) {
     var SBGreen = DotEnv().env['SBGREEN'].toString();

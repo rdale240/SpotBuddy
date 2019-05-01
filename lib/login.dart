@@ -48,8 +48,13 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  Color hexToColor(String code) {
+  return new Color(int.parse(code));
+  }
+
   void _login() {
     var url = DotEnv().env['SIGNINURL'].toString();
+    
     print(url);
     //var url = "http://3.18.95.167/signin/";
     //var url = "http://18.222.104.22/createProfile";
@@ -89,6 +94,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    Color SBGreen=hexToColor(DotEnv().env['SBGREEN'].toString());
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -96,9 +102,13 @@ class _LoginPageState extends State<LoginPage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
+      appBar: AppBar(
+        title: Text("SpotBuddy Login", style: TextStyle(color: Colors.white)),
+        backgroundColor: Color(0xFF306856),
+      ),
       body: Container(
         //color: Color(0xBB2C5424),
-        color: Color(0xFF306856),
+        color: SBGreen,
         // decoration: BoxDecoration(
         //     gradient: LinearGradient(
         //         begin: Alignment.topLeft,
@@ -134,13 +144,13 @@ class _LoginPageState extends State<LoginPage> {
           // horizontal).
           padding: EdgeInsets.symmetric(horizontal: 24.0),
           children: <Widget>[
-            SizedBox(height: 80.0),
-            Center(
-                child: Text(
-              "Login",
-              style: Theme.of(context).textTheme.display2,
-            )),
-            SizedBox(height: 80.0), // Space for Logo
+            // SizedBox(height: 80.0),
+            // Center(
+            //     child: Text(
+            //   "Login",
+            //   style: Theme.of(context).textTheme.display2,
+            // )),
+             SizedBox(height: 80.0), // Space for Logo
             TextField(
               controller: email,
               decoration: InputDecoration(

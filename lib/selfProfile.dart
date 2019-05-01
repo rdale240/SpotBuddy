@@ -19,6 +19,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String url = "http://3.18.95.167/getProfile/";
   String fname = "";
   String bio = "";
+  String locationID = "";
   List list = List();
 
    void initState() {
@@ -35,6 +36,7 @@ class _ProfilePageState extends State<ProfilePage> {
       setState(() {
         this.fname=list[0]["first_name"];
         this.bio=list[0]["biography"];
+        this.locationID = list[0]['broadLocationID'];
     });
     });
 
@@ -84,6 +86,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         uid: widget.uid,
                                         name: this.fname ?? '',
                                         uBio: this.bio ?? '',
+                                        location: locationID ?? '',
                                       ))).then((v) {
                                           _updatePage();
                                       });
@@ -93,13 +96,11 @@ class _ProfilePageState extends State<ProfilePage> {
                 SizedBox(width: 48.0),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     Text(fname),
                     SizedBox(height: 16.0),
-                    Text("Age Gender"),
-                    SizedBox(height: 16.0),
-                    Text("Focused Location"),
+                    Text(locationID),
                   ],
                 ),
               ],
@@ -121,11 +122,11 @@ class _ProfilePageState extends State<ProfilePage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Text(random.randomAlpha(8) + "     ",
+                    Text("Food" + "     ",
                         style: Theme.of(context).textTheme.body1),
-                    Text(random.randomAlpha(8) + "      ",
+                    Text("Music"+ "      ",
                         style: Theme.of(context).textTheme.body1),
-                    Text(random.randomAlpha(8) + "     ",
+                    Text("Traveling" + "     ",
                         style: Theme.of(context).textTheme.body1),
                   ],
                 )

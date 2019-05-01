@@ -6,7 +6,7 @@ import './homepage.dart';
 import './addInterest.dart';
 
 class EditProfilePage extends StatefulWidget {
-  EditProfilePage({Key key, this.title, this.uid, this.name, this.uBio}) : super(key: key);
+  EditProfilePage({Key key, this.title, this.uid, this.name, this.uBio, this.location}) : super(key: key);
   @override
   _EditProfilePageState createState() => _EditProfilePageState();
 
@@ -15,6 +15,7 @@ class EditProfilePage extends StatefulWidget {
   final String uid;
   final String name;
   final String uBio;
+  final String location;
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
@@ -23,7 +24,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
   var list;
   String fname;
   String biography;
+  List<String> interestList = [];
 
+  
  
 
   void _initializePage(){
@@ -49,6 +52,28 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+
+    var interestListings = () {
+      if (interestList != null) {
+        return <Widget>[
+          Text("Food"+ "     ",
+              style: Theme.of(context).textTheme.body1),
+          Text("Music" + "     ",
+              style: Theme.of(context).textTheme.body1),
+          Text("Travel" + "     ",
+              style: Theme.of(context).textTheme.body1),
+        ];
+      } else {
+        return <Widget>[
+          Text("Loading..." + "     ",
+              style: Theme.of(context).textTheme.body1),
+          Text("" + "      ",
+              style: Theme.of(context).textTheme.body1),
+          Text("" + "     ",
+              style: Theme.of(context).textTheme.body1),
+        ];
+      }
+    };
     //bio.text = random.randomAlpha(500);
     if (this.fname == null)
     {
@@ -82,9 +107,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   children: <Widget>[
                     Text(this.fname ?? widget.name),
                     SizedBox(height: 16.0),
-                    Text("Age Gender"),
-                    SizedBox(height: 16.0),
-                    Text("Focused Location"),
+                    Text(widget.location),
                   ],
                 ),
               ],
@@ -111,18 +134,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 SizedBox(height: 16.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Text(random.randomAlpha(8) + "     ",
-                        style: Theme.of(context).textTheme.body1),
-                    Text(random.randomAlpha(8) + "      ",
-                        style: Theme.of(context).textTheme.body1),
-                    Text(random.randomAlpha(8) + "     ",
-                        style: Theme.of(context).textTheme.body1),
+                  children: interestListings(),
+                ),
                   ],
                 )
               ],
             ),
-          ],
-        ));
+        );
   }
 }

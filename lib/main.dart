@@ -13,8 +13,26 @@ Future main() async {
   await DotEnv().load('.env');
 }
 
+Color hexToColor(String code) {
+  return new Color(int.parse(code));
+}
+
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+  //Color SBGreen = hexToColor(DotEnv().env['SBGREEN'].toString());
+  var SBGreen =0xFF306856;
+  Map<int, Color> color = {
+    50: Color.fromRGBO(48, 104, 86, .1),
+    100: Color.fromRGBO(48, 104, 86, .2),
+    200: Color.fromRGBO(48, 104, 86, .3),
+    300: Color.fromRGBO(48, 104, 86, .4),
+    400: Color.fromRGBO(48, 104, 86, .5),
+    500: Color.fromRGBO(48, 104, 86, .6),
+    600: Color.fromRGBO(48, 104, 86, .7),
+    700: Color.fromRGBO(48, 104, 86, .8),
+    800: Color.fromRGBO(48, 104, 86, .9),
+    900: Color.fromRGBO(48, 104, 86, 1),
+  };
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -29,7 +47,7 @@ class MyApp extends StatelessWidget {
           // or simply save your changes to "hot reload" in a Flutter IDE).
           // Notice that the counter didn't reset back to zero; the application
           // is not restarted.
-          primarySwatch: Colors.lightGreen,
+          primarySwatch: MaterialColor(SBGreen, color),
           textTheme: TextTheme(
             body1: new TextStyle(color: Colors.black),
             display1: new TextStyle(color: Colors.black, fontSize: 32),
@@ -127,7 +145,10 @@ class _LandingState extends State<Landing> {
                   child: new RaisedButton(
                     color: Color(0xff2F8C3E),
                     elevation: 1,
-                    child: new Text("Login", style: Theme.of(context).textTheme.display3,),
+                    child: new Text(
+                      "Login",
+                      style: Theme.of(context).textTheme.display3,
+                    ),
                     shape: new RoundedRectangleBorder(
                       side: BorderSide(color: Color(0xFFFFFFFF)),
                       borderRadius: new BorderRadius.circular(60.0),
@@ -150,9 +171,12 @@ class _LandingState extends State<Landing> {
                 padding: EdgeInsets.fromLTRB(64, 0, 64, 0),
                 child: RaisedButton(
                   color: Color(0xff2F8C3E),
-                  child: Text("Sign Up",style: Theme.of(context).textTheme.display3,),
+                  child: Text(
+                    "Sign Up",
+                    style: Theme.of(context).textTheme.display3,
+                  ),
                   shape: RoundedRectangleBorder(
-                    side: BorderSide(color: Color(0xFFFFFFFF)),
+                      side: BorderSide(color: Color(0xFFFFFFFF)),
                       borderRadius: new BorderRadius.circular(120.0)),
                   onPressed: () {
                     _Log();

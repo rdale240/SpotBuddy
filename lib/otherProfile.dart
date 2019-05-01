@@ -123,11 +123,11 @@ class _OtherProfilePageState extends State<OtherProfilePage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Text(random.randomAlpha(8) + "     ",
+                    Text("Food" + "     ",
                         style: Theme.of(context).textTheme.body1),
-                    Text(random.randomAlpha(8) + "      ",
+                    Text("Music"+ "      ",
                         style: Theme.of(context).textTheme.body1),
-                    Text(random.randomAlpha(8) + "     ",
+                    Text("Travel" + "     ",
                         style: Theme.of(context).textTheme.body1),
                   ],
                 )
